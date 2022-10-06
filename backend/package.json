@@ -9,7 +9,7 @@
     "start": "node dist/server.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\""
   },
-  "author": "Andrew Zang & Matthew Yue",
+  "author": "Matthew Yue & Andrew Zang",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
