@@ -14,4 +14,4 @@ We have set up the MySQL database on the local machine and are able to interact 
 - socket.io
 
 ### Comiple and Start
-run `npm build` first, and then `npm run dev`. Note that by default, the backend would start in `localhost:50000`
+run `npm build` first, and then `npm run dev`. Note that by default, the backend would start in `localhost:50000`. The compiled javascript code (from typescript) would be saved to `/backend/dist` folder.
