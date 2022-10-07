@@ -13,6 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const UserModel_1 = __importDefault(require("./UserModel"));
+// // Generate token
+const generateToken = (id) => {
+    return jsonwebtoken_1.default.sign({ id }, /*process.env.JWT_SECRET*/ '20', { expiresIn: '30d' });
+};
 // ------------------------------------------------------------------------
 // @description register a new user
 // @route /api/users
@@ -20,37 +27,43 @@ const express_async_handler_1 = __importDefault(require("express-async-handler")
 const registerUser = (0, express_async_handler_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password } = req.body;
     // Validating email and password
-    console.log(name, email, password);
     if (!name || !email || !password) {
         res.status(400);
         throw new Error('Please Include all fields');
     }
     // Find id user already registered
-    // const userExists = await User.findOne({ email })
-    // if (userExists) {
-    //   res.status(400)
-    //   throw new Error('User already exists')
-    // }
+    const userExists = yield UserModel_1.default.findOne({
+        where: {
+            email: email,
+        },
+    });
+    if (userExists) {
+        res.status(400);
+        throw new Error('User already Registered');
+    }
     // Hash password
-    // const salt = await bcrypt.genSalt(10)
-    // const hashedPassword = await bcrypt.hash(password, salt)
+    const salt = yield bcryptjs_1.default.genSalt(10);
+    const hashedPassword = yield bcryptjs_1.default.hash(password, salt);
+    console.log(hashedPassword);
     // Create user
-    // const user = await User.create({
-    //   name,
-    //   email,
-    //   password: hashedPassword,
-    // })
-    // if (user) {
-    //   res.status(201).json({
-    //     _id: user._id,
-    //     name: user.name,
-    //     email: user.email,
-    //     token: generateToken(user._id),
-    //   })
-    // } else {
-    //   res.status(400)
-    //   throw new error('Invalid user data')
-    // }
+    const user = yield UserModel_1.default.create({
+        name,
+        email,
+        password: hashedPassword,
+    });
+    // console.log(user.getDataValue('name'))
+    if (user) {
+        res.status(201).json({
+            _id: user.getDataValue('id'),
+            name: user.getDataValue('name'),
+            email: user.getDataValue('email'),
+            token: generateToken(user.getDataValue('id')),
+        });
+    }
+    else {
+        res.status(400);
+        throw new Error('Invalid user data');
+    }
 }));
 // // @description login a new user
 // // @route /api/users/login

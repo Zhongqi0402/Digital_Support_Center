@@ -1,21 +1,21 @@
 import { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
-// const bcrypt = require('bcryptjs')
-// const jwt = require('jsonwebtoken')
-// const User = require('../models/userModel')
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import User from './UserModel'
 
 // // Generate token
-// const generateToken = (id) => {
-//   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' })
-// }
+const generateToken = (id: string) => {
+  return jwt.sign({ id }, /*process.env.JWT_SECRET*/ '20', { expiresIn: '30d' })
+}
 
 // ------------------------------------------------------------------------
 type Next = () => void | Promise<void>
 
 interface RegisterUserBody {
-  name: String | null
-  email: String | null
-  password: String | null
+  name: string | null
+  email: string | null
+  password: string | null
 }
 
 interface CustomRequest<T> extends Request {
@@ -31,42 +31,46 @@ const registerUser = asyncHandler(
     const { name, email, password } = req.body
 
     // Validating email and password
-    console.log(name, email, password)
     if (!name || !email || !password) {
       res.status(400)
       throw new Error('Please Include all fields')
     }
 
     // Find id user already registered
-    // const userExists = await User.findOne({ email })
+    const userExists = await User.findOne({
+      where: {
+        email: email,
+      },
+    })
 
-    // if (userExists) {
-    //   res.status(400)
-    //   throw new Error('User already exists')
-    // }
+    if (userExists) {
+      res.status(400)
+      throw new Error('User already Registered')
+    }
 
     // Hash password
-    // const salt = await bcrypt.genSalt(10)
-    // const hashedPassword = await bcrypt.hash(password, salt)
+    const salt: string = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+    console.log(hashedPassword)
 
     // Create user
-    // const user = await User.create({
-    //   name,
-    //   email,
-    //   password: hashedPassword,
-    // })
-
-    // if (user) {
-    //   res.status(201).json({
-    //     _id: user._id,
-    //     name: user.name,
-    //     email: user.email,
-    //     token: generateToken(user._id),
-    //   })
-    // } else {
-    //   res.status(400)
-    //   throw new error('Invalid user data')
-    // }
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+    })
+    // console.log(user.getDataValue('name'))
+    if (user) {
+      res.status(201).json({
+        _id: user.getDataValue('id'),
+        name: user.getDataValue('name'),
+        email: user.getDataValue('email'),
+        token: generateToken(user.getDataValue('id')),
+      })
+    } else {
+      res.status(400)
+      throw new Error('Invalid user data')
+    }
   }
 )
 

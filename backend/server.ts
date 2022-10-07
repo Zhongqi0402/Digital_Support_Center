@@ -1,6 +1,9 @@
 import express, { Express, Request, Response } from 'express'
 import dotenv from 'dotenv'
 
+import sequelize from './database'
+import User from './routes/userRoute/UserModel'
+
 dotenv.config()
 
 const app: Express = express()
@@ -15,9 +18,27 @@ app.get('/', (req: Request, res: Response) => {
 })
 app.use('/api/users', require('./routes/userRoute/userRoute'))
 
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at https://localhost:${port}`)
-})
+sequelize
+  // .sync({ force: true }) // force recreation of tables
+  .sync()
+  .then((result) => {
+    return User.findByPk(1)
+  })
+  .then((user) => {
+    if (!user) {
+      return User.create({
+        name: 'Andrew Soft',
+        email: 'andrewSoft@soft.com',
+        password: 'abcde',
+      })
+    }
+    return user
+  })
+  .then((user) => {
+    app.listen(port)
+    console.log(`⚡️[server]: Server is running at https://localhost:${port}`)
+  })
+  .catch((err) => console.log(err)) // sync model we manually created to the db
 
 // -------------------------------------------------------------------------
 // code below are for reference

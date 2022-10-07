@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const database_1 = __importDefault(require("./database"));
+const UserModel_1 = __importDefault(require("./routes/userRoute/UserModel"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -16,9 +18,27 @@ app.get('/', (req, res) => {
     res.send('Express + TypeScript Server');
 });
 app.use('/api/users', require('./routes/userRoute/userRoute'));
-app.listen(port, () => {
+database_1.default
+    // .sync({ force: true }) // force recreation of tables
+    .sync()
+    .then((result) => {
+    return UserModel_1.default.findByPk(1);
+})
+    .then((user) => {
+    if (!user) {
+        return UserModel_1.default.create({
+            name: 'Andrew Soft',
+            email: 'andrewSoft@soft.com',
+            password: 'abcde',
+        });
+    }
+    return user;
+})
+    .then((user) => {
+    app.listen(port);
     console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
-});
+})
+    .catch((err) => console.log(err)); // sync model we manually created to the db
 // -------------------------------------------------------------------------
 // code below are for reference
 // const {errorHandler} = require("./middleware/errorMiddleware")
