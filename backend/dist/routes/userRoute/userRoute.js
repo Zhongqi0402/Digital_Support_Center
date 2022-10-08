@@ -4,14 +4,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const UsersRouter = express_1.default.Router();
-const { registerUser, loginUser, getMe } = require('./userController');
+const userController_1 = require("./userController");
 // const { protect } = require('../middleware/authMiddleware')
+const UsersRouter = express_1.default.Router();
 // dummy request
 UsersRouter.get('/', (req, res) => {
     res.send('hello world');
 });
-UsersRouter.post('/', registerUser);
-// UsersRouter.post('/login', loginUser)
-// UsersRouter.get('/me', protect, getMe)
+UsersRouter.post('/', userController_1.registerUser);
+UsersRouter.post('/login', userController_1.loginUser);
+// UsersRouter.get('/me', protect, getCurrentUser)
+UsersRouter.get('/me', userController_1.getCurrentUser);
 module.exports = UsersRouter;

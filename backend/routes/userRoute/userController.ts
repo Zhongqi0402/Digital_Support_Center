@@ -4,11 +4,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import User from './UserModel'
 
-// // Generate token
-const generateToken = (id: string) => {
-  return jwt.sign({ id }, /*process.env.JWT_SECRET*/ '20', { expiresIn: '30d' })
-}
-
+// type definition:
 // ------------------------------------------------------------------------
 type Next = () => void | Promise<void>
 
@@ -18,10 +14,30 @@ interface RegisterUserBody {
   password: string | null
 }
 
+interface LoginUserBody {
+  email: string
+  password: string
+}
+
 interface CustomRequest<T> extends Request {
   body: T
 }
+
+interface RequestUser {
+  _id: number
+  email: string
+  name: string
+}
+
+interface CurrentUserRequest extends Request {
+  user?: RequestUser
+}
 // ------------------------------------------------------------------------
+
+// Generate token
+const generateToken = (id: string) => {
+  return jwt.sign({ id }, /*process.env.JWT_SECRET*/ '20', { expiresIn: '30d' })
+}
 
 // @description register a new user
 // @route /api/users
@@ -74,43 +90,50 @@ const registerUser = asyncHandler(
   }
 )
 
-// // @description login a new user
-// // @route /api/users/login
-// // @access public
-// const loginUser = asyncHandler(async (req, res, next) => {
-//   const { email, password } = req.body
+// @description login a new user
+// @route /api/users/login
+// @access public
+const loginUser = asyncHandler(
+  async (req: CustomRequest<LoginUserBody>, res: Response, next: Next) => {
+    const { email, password } = req.body
 
-//   const user = await User.findOne({ email })
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+    })
 
-//   // Check user and passwords match
-//   if (user && (await bcrypt.compare(password, user.password))) {
-//     res.status(200).json({
-//       _id: user._id,
-//       name: user.name,
-//       email: user.email,
-//       token: generateToken(user._id),
-//       isAdmin: user.isAdmin,
-//     })
-//   } else {
-//     res.status(401)
-//     throw new Error('Invalid credentials')
-//   }
-// })
+    // Check user and passwords match
+    if (
+      user &&
+      (await bcrypt.compare(password, user.getDataValue('password')))
+    ) {
+      res.status(200).json({
+        _id: user.getDataValue('id'),
+        name: user.getDataValue('name'),
+        email: user.getDataValue('email'),
+        token: generateToken(user.getDataValue('id')),
+        isAdmin: user.getDataValue('isAdmin'),
+      })
+    } else {
+      res.status(401)
+      throw new Error('Invalid credentials')
+    }
+  }
+)
 
-// // @desc    Get current user
-// // @route   /api/users/me
-// // @access  Private
-// const getMe = asyncHandler(async (req, res) => {
-//   const user = {
-//     id: req.user._id,
-//     email: req.user.email,
-//     name: req.user.name,
-//   }
-//   res.status(200).json(user)
-// })
+// @desc    Get current user
+// @route   /api/users/me
+// @access  Private
+const getCurrentUser = asyncHandler(
+  async (req: CurrentUserRequest, res: Response) => {
+    const user = {
+      id: req.user ? req.user._id : null,
+      email: req.user ? req.user.email : null,
+      name: req.user ? req.user.name : null,
+    }
+    res.status(200).json(user)
+  }
+)
 
-module.exports = {
-  registerUser,
-  // loginUser,
-  // getMe,
-}
+export { registerUser, loginUser, getCurrentUser }

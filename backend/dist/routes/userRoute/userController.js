@@ -12,15 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getCurrentUser = exports.loginUser = exports.registerUser = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const UserModel_1 = __importDefault(require("./UserModel"));
-// // Generate token
+// ------------------------------------------------------------------------
+// Generate token
 const generateToken = (id) => {
     return jsonwebtoken_1.default.sign({ id }, /*process.env.JWT_SECRET*/ '20', { expiresIn: '30d' });
 };
-// ------------------------------------------------------------------------
 // @description register a new user
 // @route /api/users
 // @access public
@@ -65,39 +66,43 @@ const registerUser = (0, express_async_handler_1.default)((req, res, next) => __
         throw new Error('Invalid user data');
     }
 }));
-// // @description login a new user
-// // @route /api/users/login
-// // @access public
-// const loginUser = asyncHandler(async (req, res, next) => {
-//   const { email, password } = req.body
-//   const user = await User.findOne({ email })
-//   // Check user and passwords match
-//   if (user && (await bcrypt.compare(password, user.password))) {
-//     res.status(200).json({
-//       _id: user._id,
-//       name: user.name,
-//       email: user.email,
-//       token: generateToken(user._id),
-//       isAdmin: user.isAdmin,
-//     })
-//   } else {
-//     res.status(401)
-//     throw new Error('Invalid credentials')
-//   }
-// })
-// // @desc    Get current user
-// // @route   /api/users/me
-// // @access  Private
-// const getMe = asyncHandler(async (req, res) => {
-//   const user = {
-//     id: req.user._id,
-//     email: req.user.email,
-//     name: req.user.name,
-//   }
-//   res.status(200).json(user)
-// })
-module.exports = {
-    registerUser,
-    // loginUser,
-    // getMe,
-};
+exports.registerUser = registerUser;
+// @description login a new user
+// @route /api/users/login
+// @access public
+const loginUser = (0, express_async_handler_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
+    const user = yield UserModel_1.default.findOne({
+        where: {
+            email: email,
+        },
+    });
+    // Check user and passwords match
+    if (user &&
+        (yield bcryptjs_1.default.compare(password, user.getDataValue('password')))) {
+        res.status(200).json({
+            _id: user.getDataValue('id'),
+            name: user.getDataValue('name'),
+            email: user.getDataValue('email'),
+            token: generateToken(user.getDataValue('id')),
+            isAdmin: user.getDataValue('isAdmin'),
+        });
+    }
+    else {
+        res.status(401);
+        throw new Error('Invalid credentials');
+    }
+}));
+exports.loginUser = loginUser;
+// @desc    Get current user
+// @route   /api/users/me
+// @access  Private
+const getCurrentUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = {
+        id: req.user ? req.user._id : null,
+        email: req.user ? req.user.email : null,
+        name: req.user ? req.user.name : null,
+    };
+    res.status(200).json(user);
+}));
+exports.getCurrentUser = getCurrentUser;
