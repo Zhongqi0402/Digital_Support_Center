@@ -39,11 +39,9 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
-const sync_1 = require("csv-parse/sync");
+const csv_parse_1 = require("csv-parse");
 const database_1 = __importDefault(require("./database"));
 const UserModel_1 = __importDefault(require("./routes/userRoute/UserModel"));
-const ProductModel_1 = __importDefault(require("./routes/ticketRoutes/ProductModel"));
-const TicketModel_1 = __importDefault(require("./routes/ticketRoutes/TicketModel"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -55,66 +53,32 @@ app.get('/', (req, res) => {
     res.send('Express + TypeScript Server');
 });
 app.use('/api/users', require('./routes/userRoute/userRoute'));
-// ----------------------------------------------
-// preprocess csv files
+const csvFilePath = path.resolve(__dirname, 'users.csv');
+const headers = ['id', 'name', 'email', 'password', 'isAdmin'];
+const fileContent = fs.readFileSync(csvFilePath, { encoding: 'utf-8' });
 const runDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield database_1.default.sync();
         const isInit = (yield UserModel_1.default.findByPk(1)) ? true : false;
         if (!isInit) {
-            // users.csv
-            const csvFilePath = path.resolve(__dirname, '..', 'users.csv');
-            const headers = ['id', 'name', 'email', 'password', 'isAdmin'];
-            const fileContent = fs.readFileSync(csvFilePath, { encoding: 'utf-8' });
-            let userData = (0, sync_1.parse)(fileContent, {
+            // await User.create({
+            //   name: 'Andrew Soft',
+            //   email: 'andrewSoft@soft.com',
+            //   password: 'abcde',
+            // })
+            let userData;
+            (0, csv_parse_1.parse)(fileContent, {
                 delimiter: ',',
                 columns: headers,
+            }, (error, result) => {
+                if (error) {
+                    // console.error(error)
+                }
+                console.log('Result', result);
+                userData = result;
             });
-            userData = userData.map((row) => {
-                return Object.assign(Object.assign({}, row), { id: parseInt(row.id), isAdmin: Boolean(row.isAdmin) });
-            });
-            // console.log(userData)
-            yield UserModel_1.default.bulkCreate(userData);
-            // products.csv
-            const productFilePath = path.resolve(__dirname, '..', 'products.csv');
-            // console.log('filePath: ', productFilePath)
-            // id,manufacturer,type,colour
-            const productHeaders = ['id', 'manufacturer', 'type', 'colour'];
-            const productContent = fs.readFileSync(productFilePath, {
-                encoding: 'utf-8',
-            });
-            let productData = (0, sync_1.parse)(productContent, {
-                delimiter: ',',
-                columns: productHeaders,
-            });
-            productData = productData.map((row) => {
-                return Object.assign(Object.assign({}, row), { id: parseInt(row.id) });
-            });
-            // console.log(productData)
-            yield ProductModel_1.default.bulkCreate(productData);
-            // tickets.csv
-            const ticketsFilePath = path.resolve(__dirname, '..', 'tickets.csv');
-            // console.log('filePath: ', ticketsFilePath)
-            // id,manufacturer,type,colour
-            const ticketsHeaders = [
-                'id',
-                'userID',
-                'productID',
-                'description',
-                'status',
-            ];
-            const ticketsContent = fs.readFileSync(ticketsFilePath, {
-                encoding: 'utf-8',
-            });
-            let ticketsData = (0, sync_1.parse)(ticketsContent, {
-                delimiter: ',',
-                columns: ticketsHeaders,
-            });
-            ticketsData = ticketsData.map((row) => {
-                return Object.assign(Object.assign({}, row), { id: parseInt(row.id), userID: parseInt(row.userID), productID: parseInt(row.productID) });
-            });
-            // console.log(ticketsData)
-            yield TicketModel_1.default.bulkCreate(ticketsData);
+            yield UserModel_1.default.create(userData);
+            // await Product.create()
             // await Ticket.create()
         }
         app.listen(port);
