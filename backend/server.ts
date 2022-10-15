@@ -6,8 +6,8 @@ import { parse } from 'csv-parse/sync'
 
 import sequelize from './database'
 import User from './routes/userRoute/UserModel'
-import Product from './routes/ticketRoutes/ProductModel'
-import Ticket from './routes/ticketRoutes/TicketModel'
+import Product from './routes/ticketRoute/ProductModel'
+import Ticket from './routes/ticketRoute/TicketModel'
 
 dotenv.config()
 
@@ -22,6 +22,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server')
 })
 app.use('/api/users', require('./routes/userRoute/userRoute'))
+app.use('/api/tickets', require('./routes/ticketRoute/ticketRoute'))
 
 // ----------------------------------------------
 // preprocess csv files
@@ -91,9 +92,9 @@ const runDB = async () => {
       })
       // console.log(ticketsData)
       await Ticket.bulkCreate(ticketsData)
-
-      // await Ticket.create()
     }
+    Product.hasMany(Ticket)
+    Ticket.belongsTo(Product)
     app.listen(port)
     console.log(`⚡️[server]: Server is running at https://localhost:${port}`)
   } catch (error) {

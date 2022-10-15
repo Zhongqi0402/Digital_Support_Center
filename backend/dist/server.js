@@ -42,8 +42,8 @@ const path = __importStar(require("path"));
 const sync_1 = require("csv-parse/sync");
 const database_1 = __importDefault(require("./database"));
 const UserModel_1 = __importDefault(require("./routes/userRoute/UserModel"));
-const ProductModel_1 = __importDefault(require("./routes/ticketRoutes/ProductModel"));
-const TicketModel_1 = __importDefault(require("./routes/ticketRoutes/TicketModel"));
+const ProductModel_1 = __importDefault(require("./routes/ticketRoute/ProductModel"));
+const TicketModel_1 = __importDefault(require("./routes/ticketRoute/TicketModel"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -55,6 +55,7 @@ app.get('/', (req, res) => {
     res.send('Express + TypeScript Server');
 });
 app.use('/api/users', require('./routes/userRoute/userRoute'));
+app.use('/api/tickets', require('./routes/ticketRoute/ticketRoute'));
 // ----------------------------------------------
 // preprocess csv files
 const runDB = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -115,8 +116,9 @@ const runDB = () => __awaiter(void 0, void 0, void 0, function* () {
             });
             // console.log(ticketsData)
             yield TicketModel_1.default.bulkCreate(ticketsData);
-            // await Ticket.create()
         }
+        ProductModel_1.default.hasMany(TicketModel_1.default);
+        TicketModel_1.default.belongsTo(ProductModel_1.default);
         app.listen(port);
         console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
     }
