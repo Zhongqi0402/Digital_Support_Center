@@ -30,7 +30,9 @@ The backend component uses nodeJS with Sequelize ORM for communicating with data
 - Typescript with Sequelize to create tables from sample data can be found in `backend/server.ts`
 - Other functional ORM code can be found in `Controller` file under `backend/routes` with different routes. 
 
+### C5. 
 
+If you want to test backend API endpoints, please use Postman.
 
 # Backend Component
 
