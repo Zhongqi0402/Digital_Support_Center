@@ -11,6 +11,12 @@ We have set up the MySQL database on the local machine and are able to interact 
 5. In a terminal with the project folder, do `cd backend`
 6. run `npm run dev` and npm will take care of creating the table by running codes in `/backend/server.ts`
 
+### Features it currently supports
+1. Register a user to the database
+2. Check if a user exists in the database
+3. Update a ticket into the database
+4. Delete a ticket from the database
+
 ### SQL Code
 
 The backend component uses nodeJS with Sequelize ORM for communicating with dataabse. 
