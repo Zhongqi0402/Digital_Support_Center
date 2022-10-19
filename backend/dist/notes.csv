@@ -1,0 +1,5 @@
+﻿id,ticketId,text,isadmin
+1,2,Some replies please,FALSE
+2,4,"No, it is not my responsibility",FALSE
+3,5,"Hi, I am very sorry to hear about that",TRUE
+4,4,Did the product drops in the water?,TRUE
