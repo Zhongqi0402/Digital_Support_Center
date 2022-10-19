@@ -1,0 +1,7 @@
+id,name,email,password,isAdmin,createdAt,updatedAt
+1,"John Doe",johndoe@gmail.com,$2a$10$OqXo/KGLfzvHmyGhCqUNmeNURM.QfK25BQN6Ddpdjt5R/aaxgCWfu,1,"2022-10-19 00:44:26","2022-10-19 00:44:26"
+2,"Jane Doe",jamedoe@gmail.com,$2a$10$OqXo/KGLfzvHmyGhCqUNmeBxWoB5UJgg5c4pgQChmyhzxCbPOtR4G,1,"2022-10-19 00:44:26","2022-10-19 00:44:26"
+3,"Andrew Zang",x5zang@uwaterloo.ca,$2a$10$OqXo/KGLfzvHmyGhCqUNmep48Ki9UttLyGos0nSDX4PsKOBc4osa6,1,"2022-10-19 00:44:26","2022-10-19 00:44:26"
+4,"Matthew Yue",z3yue@uwaterloo.ca,$2a$10$OqXo/KGLfzvHmyGhCqUNme0bqJUK8qjvtPPIK4sDTLrehuG6bR.FK,1,"2022-10-19 00:44:26","2022-10-19 00:44:26"
+5,Tim,tim@hortons.ca,$2a$10$OqXo/KGLfzvHmyGhCqUNmemAWpf0IPGmuoWGDFoDNUPRbkZIpelee,1,"2022-10-19 00:44:26","2022-10-19 00:44:26"
+6,Andrew,andrew@gmail.ca,123456,0,"2022-10-18 21:00:30","2022-10-18 21:00:30"

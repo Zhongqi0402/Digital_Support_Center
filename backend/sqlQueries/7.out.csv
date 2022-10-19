@@ -1,0 +1,2 @@
+id,name,email,password,isAdmin,createdAt,updatedAt
+1,"John Doe",johndoe@gmail.com,$2a$10$OqXo/KGLfzvHmyGhCqUNmeNURM.QfK25BQN6Ddpdjt5R/aaxgCWfu,1,"2022-10-19 00:44:26","2022-10-19 00:44:26"
