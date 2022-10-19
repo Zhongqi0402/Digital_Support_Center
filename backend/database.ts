@@ -4,7 +4,7 @@ import { Sequelize } from 'sequelize'
 const sequelize: Sequelize = new Sequelize(
   '348-project',
   'root',
-  'Uforse2020!',
+  'Yzq010402,.,.',
   {
     dialect: 'mysql',
     host: 'localhost',
