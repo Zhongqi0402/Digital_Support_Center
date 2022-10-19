@@ -20,7 +20,7 @@ We have set up the MySQL database on the local machine and are able to interact 
 
 ### C2. SQL for Creating Tables and inserting sample data
 
-Typescript code for reading csv and insert sample data to database be found in `backend/server.ts` and the SQL can be found in `backend/createDB/create.sql` file. Table definitions has a name of Model.ts and they can be found in `backend/routes` under different routes. There are functions in `server.ts` file for checking if tables in local table are empty or not. if the user table locally is empty, then it will populate data from csv files into the database.
+Typescript code for reading csv and insert sample data to database be found in `backend/server.ts` and the SQL can be found in `backend/createDB/create.sql` file. Table definitions has a name of Model.ts and they can be found in `backend/routes` under different routes. There are functions in `server.ts` file for checking if tables in local database are empty or not. If the user table is empty locally, then it will populate data from csv files into the database.
 
 ### C3. SQL Code
 
