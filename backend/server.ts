@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from 'express'
 import dotenv from 'dotenv'
+import bcrypt from 'bcryptjs'
 import * as fs from 'fs'
 import * as path from 'path'
 import { parse } from 'csv-parse/sync'
@@ -40,9 +41,28 @@ const runDB = async () => {
         delimiter: ',',
         columns: headers,
       })
-      userData = userData.map((row: any) => {
-        return { ...row, id: parseInt(row.id), isAdmin: Boolean(row.isAdmin) }
-      })
+      const salt: string = await bcrypt.genSalt(10)
+
+      // userData = userData.map(async (row: any) => {
+      //   const hashedPassword = await bcrypt.hash(row.password, salt)
+      //   return {
+      //     ...row,
+      //     id: parseInt(row.id),
+      //     isAdmin: Boolean(row.isAdmin),
+      //     password: hashedPassword,
+      //   }
+      // })
+      userData = await Promise.all(
+        userData.map(async (row: any) => {
+          const hashedPassword = await bcrypt.hash(row.password, salt)
+          return {
+            ...row,
+            id: parseInt(row.id),
+            isAdmin: Boolean(row.isAdmin),
+            password: hashedPassword,
+          }
+        })
+      )
       // console.log(userData)
       await User.bulkCreate(userData)
 

@@ -37,6 +37,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const sync_1 = require("csv-parse/sync");
@@ -71,9 +72,20 @@ const runDB = () => __awaiter(void 0, void 0, void 0, function* () {
                 delimiter: ',',
                 columns: headers,
             });
-            userData = userData.map((row) => {
-                return Object.assign(Object.assign({}, row), { id: parseInt(row.id), isAdmin: Boolean(row.isAdmin) });
-            });
+            const salt = yield bcryptjs_1.default.genSalt(10);
+            // userData = userData.map(async (row: any) => {
+            //   const hashedPassword = await bcrypt.hash(row.password, salt)
+            //   return {
+            //     ...row,
+            //     id: parseInt(row.id),
+            //     isAdmin: Boolean(row.isAdmin),
+            //     password: hashedPassword,
+            //   }
+            // })
+            userData = yield Promise.all(userData.map((row) => __awaiter(void 0, void 0, void 0, function* () {
+                const hashedPassword = yield bcryptjs_1.default.hash(row.password, salt);
+                return Object.assign(Object.assign({}, row), { id: parseInt(row.id), isAdmin: Boolean(row.isAdmin), password: hashedPassword });
+            })));
             // console.log(userData)
             yield UserModel_1.default.bulkCreate(userData);
             // products.csv
