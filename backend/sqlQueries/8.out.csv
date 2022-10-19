@@ -1,0 +1,4 @@
+id,userID,productID,description,status,createdAt,updatedAt,productId
+1,1,2,"battery outrage",open,"2022-10-19 01:02:38","2022-10-19 01:02:38",2
+2,1,3,"no signal",closed,"2022-10-19 01:02:38","2022-10-19 01:02:38",3
+3,1,4,"something wrong when playing league of legends",archieve,"2022-10-19 01:02:38","2022-10-19 01:02:38",4
