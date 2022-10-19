@@ -1,6 +1,6 @@
 # cs348_project
 
-We have set up the MySQL database on the local machine and are able to interact with it using either MySql workbench or command line.
+We have set up the MySQL database on the local machine and are able to interact with it using either MySql workbench or command line. The backend Component uses MVC (Model-View-Controller) model, where the MVC of each route can be found under `backend/routes`
 
 ### Create and Load to Sample Database
 
@@ -20,7 +20,7 @@ The backend component uses nodeJS with Sequelize ORM for communicating with data
 
 ### SQL for Creating Tables and inserting sample data
 
-Typescript code can be found in `backend/server.ts` file and the SQL can be found in `backend/createDB/create.sql` file.
+Typescript code for reading csv and insert sample data to database be found in `backend/server.ts` and the SQL can be found in `backend/createDB/create.sql` file. Table definitions has a name of Model.ts and they can be found in `backend/routes` under different routes.
 
 
 # Backend Component
