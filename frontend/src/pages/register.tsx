@@ -1,12 +1,14 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom'
 import { AiOutlineTeam } from "react-icons/ai";
-import { BiUserCheck } from "react-icons/bi";
 import { SlUserFollowing } from "react-icons/sl";
 import { useState, useEffect } from 'react'
+import { register, reset} from '../features/auth/authSlice'
+import { toast } from 'react-toastify'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
-
-const Register: FC<any> = () => {
+function Register() {
 
   const [formData, setFormData] = useState({
     name: '',
@@ -14,17 +16,52 @@ const Register: FC<any> = () => {
     password: '',
     password2: '',
   })
+
+  
+
   const { name, email, password, password2 } = formData
+  const dispatch: any = useDispatch()
+  const navigate = useNavigate()
 
-  const onSubmit = () => {
-
+  const onSubmit = (e: any) => {
+    e.preventDefault()
+    
+    if (password !== password2) {
+        toast.error('Passwords do not match')
+    } else {
+        const userData = {
+            name,
+            email,
+            password
+        }
+        
+        dispatch(register(userData))
+    }
   }
+
   const onChange = (e: any) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }))
   }
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state: any) => state.auth
+  )
+  
+  useEffect(() => {
+    if (isError) {
+      toast.error(message)
+    }
+
+    // Redirect when logged in
+    if (isSuccess || user) {
+      navigate('/')
+    }
+
+    dispatch(reset())
+  }, [isError, isSuccess, user, message, navigate, dispatch])
 
   return (
     <>
@@ -86,7 +123,9 @@ const Register: FC<any> = () => {
                         />
                     </div>
                     <div className='form-group'>
-                        <button className='btn btn-block'>Submit</button>
+                        <button className='btn btn-block'>
+                            Submit
+                        </button>
                     </div>
                 </form>
             </section>
@@ -94,5 +133,4 @@ const Register: FC<any> = () => {
         </>
   );
 };
-
 export default Register;
