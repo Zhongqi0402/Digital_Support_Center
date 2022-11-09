@@ -34,13 +34,13 @@ const protect = asyncHandler(
         // Get user from token
         let decodedID = 0
         if (typeof decoded !== 'string') decodedID = decoded.id
-        const user = await User.findByPk(decodedID) //.select('-password')
+        const user = await User.findByPk(decodedID)
         if (user === null) throw new Error('')
         req.user = {
           _id: user.getDataValue('id'),
           email: user.getDataValue('email'),
           name: user.getDataValue('name'),
-        } //.select('-password')
+        }
 
         next()
       } catch (error) {
