@@ -5,9 +5,6 @@ import User from '../userRoute/UserModel'
 import Product from './ProductModel'
 import Ticket from './TicketModel'
 
-// interface CustomRequest<T> extends Request {
-//   body: T
-// }
 interface RequestUser {
   _id: number
   email: string
@@ -29,14 +26,6 @@ interface CurrentUserRequest extends Request {
 const getTickets = asyncHandler(
   async (req: CurrentUserRequest, res: Response) => {
     // Get user using the id in the JWT
-    // ----------------------------------------------------------------------
-    // testing usage only
-    // req.user = {
-    //   _id: 1,
-    //   email: 'johndoe@gmail.com',
-    //   name: 'John Doe',
-    // }
-    // ----------------------------------------------------------------------
 
     const userID = req.user ? req.user._id : 0
     const user = await User.findOne({
@@ -66,14 +55,6 @@ const getTickets = asyncHandler(
 const getTicket = asyncHandler(
   async (req: CurrentUserRequest, res: Response) => {
     // Get user using the id in the JWT
-    // ----------------------------------------------------------------------
-    // testing usage only
-    // req.user = {
-    //   _id: 1,
-    //   email: 'johndoe@gmail.com',
-    //   name: 'John Doe',
-    // }
-    // ----------------------------------------------------------------------
     const userID = req.user ? req.user._id : 0
     const user = await User.findOne({
       where: {
@@ -112,14 +93,6 @@ const getTicket = asyncHandler(
 // @access  Private
 const createTicket = asyncHandler(
   async (req: CurrentUserRequest, res: Response) => {
-    // ----------------------------------------------------------------------
-    // testing usage only
-    // req.user = {
-    //   _id: 1,
-    //   email: 'johndoe@gmail.com',
-    //   name: 'John Doe',
-    // }
-    // ----------------------------------------------------------------------
     const { product, description } = req.body
 
     const productID = product.id
@@ -158,14 +131,6 @@ const createTicket = asyncHandler(
 // @access  Private
 const deleteTicket = asyncHandler(
   async (req: CurrentUserRequest, res: Response) => {
-    // ----------------------------------------------------------------------
-    // testing usage only
-    // req.user = {
-    //   _id: 1,
-    //   email: 'johndoe@gmail.com',
-    //   name: 'John Doe',
-    // }
-    // ----------------------------------------------------------------------
     // Get user using the id in the JWT
     const userID = req.user ? req.user._id : 0
     const user = await User.findOne({
@@ -202,15 +167,6 @@ const deleteTicket = asyncHandler(
 // @access  Private
 const updateTicket = asyncHandler(
   async (req: CurrentUserRequest, res: Response) => {
-    // ----------------------------------------------------------------------
-    // testing usage only
-    req.user = {
-      _id: 1,
-      email: 'johndoe@gmail.com',
-      name: 'John Doe',
-    }
-    // ----------------------------------------------------------------------
-
     // Get user using the id in the JWT
     const userID = req.user ? req.user._id : 0
     const user = await User.findByPk(userID)
