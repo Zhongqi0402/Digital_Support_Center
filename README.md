@@ -53,3 +53,7 @@ run `npm build` first, and then `npm run dev`. Note that by default, the backend
 ### Code Organization
 
 All backend requests are organized by routes. And Each route under the `routes` folder has three files. One for different requests under the big route, and a controller file and a model file to add functionalities.
+
+### API Request Example
+
+backend request examples can be found under `backend/exampleAPI`
