@@ -45,6 +45,7 @@ const database_1 = __importDefault(require("./database"));
 const UserModel_1 = __importDefault(require("./routes/userRoute/UserModel"));
 const ProductModel_1 = __importDefault(require("./routes/ticketRoute/ProductModel"));
 const TicketModel_1 = __importDefault(require("./routes/ticketRoute/TicketModel"));
+const NoteModel_1 = __importDefault(require("./routes/noteRoute/NoteModel"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -57,6 +58,7 @@ app.get('/', (req, res) => {
 });
 app.use('/api/users', require('./routes/userRoute/userRoute'));
 app.use('/api/tickets', require('./routes/ticketRoute/ticketRoute'));
+app.use('/api/admin', require('./routes/userRoute/adminRoute'));
 // ----------------------------------------------
 // preprocess csv files
 const runDB = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -73,25 +75,14 @@ const runDB = () => __awaiter(void 0, void 0, void 0, function* () {
                 columns: headers,
             });
             const salt = yield bcryptjs_1.default.genSalt(10);
-            // userData = userData.map(async (row: any) => {
-            //   const hashedPassword = await bcrypt.hash(row.password, salt)
-            //   return {
-            //     ...row,
-            //     id: parseInt(row.id),
-            //     isAdmin: Boolean(row.isAdmin),
-            //     password: hashedPassword,
-            //   }
-            // })
             userData = yield Promise.all(userData.map((row) => __awaiter(void 0, void 0, void 0, function* () {
                 const hashedPassword = yield bcryptjs_1.default.hash(row.password, salt);
-                return Object.assign(Object.assign({}, row), { id: parseInt(row.id), isAdmin: Boolean(row.isAdmin), password: hashedPassword });
+                return Object.assign(Object.assign({}, row), { id: parseInt(row.id), isAdmin: Boolean(row.isAdmin == 1), password: hashedPassword });
             })));
             // console.log(userData)
             yield UserModel_1.default.bulkCreate(userData);
             // products.csv
             const productFilePath = path.resolve(__dirname, '..', 'products.csv');
-            // console.log('filePath: ', productFilePath)
-            // id,manufacturer,type,colour
             const productHeaders = ['id', 'manufacturer', 'type', 'colour'];
             const productContent = fs.readFileSync(productFilePath, {
                 encoding: 'utf-8',
@@ -107,8 +98,6 @@ const runDB = () => __awaiter(void 0, void 0, void 0, function* () {
             yield ProductModel_1.default.bulkCreate(productData);
             // tickets.csv
             const ticketsFilePath = path.resolve(__dirname, '..', 'tickets.csv');
-            // console.log('filePath: ', ticketsFilePath)
-            // id,manufacturer,type,colour
             const ticketsHeaders = [
                 'id',
                 'userID',
@@ -128,10 +117,31 @@ const runDB = () => __awaiter(void 0, void 0, void 0, function* () {
             });
             // console.log(ticketsData)
             yield TicketModel_1.default.bulkCreate(ticketsData);
+            const notesFilePath = path.resolve(__dirname, '..', 'notes.csv');
+            const notesHeaders = ['id', 'ticketID', 'text', 'isStaff'];
+            const notesContent = fs.readFileSync(notesFilePath, {
+                encoding: 'utf-8',
+            });
+            let notesData = (0, sync_1.parse)(notesContent, {
+                delimiter: ',',
+                columns: notesHeaders,
+            });
+            notesData = notesData.map((row) => {
+                return Object.assign(Object.assign({}, row), { id: parseInt(row.id), ticketID: parseInt(row.ticketID), isStaff: Boolean(row.isStaff == 1) });
+            });
+            yield NoteModel_1.default.bulkCreate(notesData);
         }
-        ProductModel_1.default.hasMany(TicketModel_1.default);
-        TicketModel_1.default.belongsTo(ProductModel_1.default);
-        app.listen(port);
+        UserModel_1.default.hasMany(TicketModel_1.default, { foreignKey: 'userID' });
+        TicketModel_1.default.belongsTo(UserModel_1.default, { foreignKey: 'userID' });
+        ProductModel_1.default.hasMany(TicketModel_1.default, { foreignKey: 'productID' });
+        TicketModel_1.default.belongsTo(ProductModel_1.default, { foreignKey: 'productID' });
+        TicketModel_1.default.hasMany(NoteModel_1.default, { foreignKey: 'ticketID' });
+        NoteModel_1.default.belongsTo(TicketModel_1.default, { foreignKey: 'ticketID' });
+        const server = app.listen(port);
+        const io = require('./socket').init(server);
+        io.on('connection', () => {
+            console.log('Client connected');
+        });
         console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
     }
     catch (error) {

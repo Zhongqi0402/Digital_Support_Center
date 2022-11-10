@@ -52,7 +52,6 @@ const registerUser = (0, express_async_handler_1.default)((req, res, next) => __
         email,
         password: hashedPassword,
     });
-    // console.log(user.getDataValue('name'))
     if (user) {
         res.status(201).json({
             _id: user.getDataValue('id'),
@@ -99,7 +98,7 @@ exports.loginUser = loginUser;
 // @access  Private
 const getCurrentUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = {
-        id: req.user ? req.user._id : null,
+        _id: req.user ? req.user._id : null,
         email: req.user ? req.user.email : null,
         name: req.user ? req.user.name : null,
     };

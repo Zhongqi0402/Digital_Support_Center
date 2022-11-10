@@ -22,14 +22,6 @@ const TicketModel_1 = __importDefault(require("./TicketModel"));
 // @access  Private
 const getTickets = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Get user using the id in the JWT
-    // ----------------------------------------------------------------------
-    // testing usage only
-    // req.user = {
-    //   _id: 1,
-    //   email: 'johndoe@gmail.com',
-    //   name: 'John Doe',
-    // }
-    // ----------------------------------------------------------------------
     const userID = req.user ? req.user._id : 0;
     const user = yield UserModel_1.default.findOne({
         where: {
@@ -42,8 +34,11 @@ const getTickets = (0, express_async_handler_1.default)((req, res) => __awaiter(
     }
     const tickets = yield TicketModel_1.default.findAll({
         where: {
-            userID: req.user ? req.user._id : 0,
+            status: 'open',
+            userID: userID,
         },
+        include: [UserModel_1.default, ProductModel_1.default],
+        attributes: ['createdAt', 'Product.type', 'status', 'User.name'],
     });
     res.status(200).json(tickets);
 }));
@@ -53,14 +48,6 @@ exports.getTickets = getTickets;
 // @access  Private
 const getTicket = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Get user using the id in the JWT
-    // ----------------------------------------------------------------------
-    // testing usage only
-    // req.user = {
-    //   _id: 1,
-    //   email: 'johndoe@gmail.com',
-    //   name: 'John Doe',
-    // }
-    // ----------------------------------------------------------------------
     const userID = req.user ? req.user._id : 0;
     const user = yield UserModel_1.default.findOne({
         where: {
@@ -71,17 +58,25 @@ const getTicket = (0, express_async_handler_1.default)((req, res) => __awaiter(v
         res.status(401);
         throw new Error('User not found');
     }
-    const ticket = yield TicketModel_1.default.findOne({
-        where: {
-            id: req.params.id,
-        },
-        include: ProductModel_1.default,
+    const ticket = yield TicketModel_1.default.findByPk(req.params.id, {
+        include: [UserModel_1.default, ProductModel_1.default],
+        attributes: [
+            'id',
+            'createdAt',
+            'User.name',
+            'userID',
+            'status',
+            'Product.type',
+            'description',
+        ],
     });
     if (!ticket) {
         res.status(404);
         throw new Error('Ticket not found');
     }
-    if (ticket.getDataValue('userID') !== userID) {
+    if (parseInt(ticket.getDataValue('userID')) !== userID) {
+        console.log(ticket.getDataValue('userID'));
+        console.log(userID);
         res.status(401);
         throw new Error('Not Authorized');
     }
@@ -92,14 +87,6 @@ exports.getTicket = getTicket;
 // @route   POST /api/tickets
 // @access  Private
 const createTicket = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // ----------------------------------------------------------------------
-    // testing usage only
-    // req.user = {
-    //   _id: 1,
-    //   email: 'johndoe@gmail.com',
-    //   name: 'John Doe',
-    // }
-    // ----------------------------------------------------------------------
     const { product, description } = req.body;
     const productID = product.id;
     if (!product || !description) {
@@ -123,21 +110,24 @@ const createTicket = (0, express_async_handler_1.default)((req, res) => __awaite
         userID,
         status: 'open',
     });
-    res.status(201).json(ticket);
+    const justCreatedTicket = yield TicketModel_1.default.findByPk(ticket.getDataValue('id'), {
+        include: [UserModel_1.default, ProductModel_1.default],
+        attributes: [
+            'id',
+            'createdAt',
+            'User.name',
+            'status',
+            'Product.type',
+            'description',
+        ],
+    });
+    res.status(201).json(justCreatedTicket);
 }));
 exports.createTicket = createTicket;
 // @desc    Delete ticket
 // @route   DELETE /api/tickets/:id
 // @access  Private
 const deleteTicket = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // ----------------------------------------------------------------------
-    // testing usage only
-    // req.user = {
-    //   _id: 1,
-    //   email: 'johndoe@gmail.com',
-    //   name: 'John Doe',
-    // }
-    // ----------------------------------------------------------------------
     // Get user using the id in the JWT
     const userID = req.user ? req.user._id : 0;
     const user = yield UserModel_1.default.findOne({
@@ -166,14 +156,6 @@ exports.deleteTicket = deleteTicket;
 // @route   PUT /api/tickets/:id
 // @access  Private
 const updateTicket = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // ----------------------------------------------------------------------
-    // testing usage only
-    req.user = {
-        _id: 1,
-        email: 'johndoe@gmail.com',
-        name: 'John Doe',
-    };
-    // ----------------------------------------------------------------------
     // Get user using the id in the JWT
     const userID = req.user ? req.user._id : 0;
     const user = yield UserModel_1.default.findByPk(userID);
@@ -183,6 +165,12 @@ const updateTicket = (0, express_async_handler_1.default)((req, res) => __awaite
     }
     const updatedDescription = req.body.description;
     const updatedStatus = req.body.status;
+    if (updatedStatus !== 'open' &&
+        updatedStatus !== 'closed' &&
+        updatedStatus !== 'archived') {
+        res.status(401);
+        throw new Error('Updated Status is not one of open, closed or archived');
+    }
     TicketModel_1.default.findByPk(req.params.id)
         .then((ticket) => {
         if (!ticket) {
@@ -202,6 +190,8 @@ const updateTicket = (0, express_async_handler_1.default)((req, res) => __awaite
         console.log('UPDATED TICKETS');
         res.status(200).json(result);
     })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+        console.log(err);
+    });
 }));
 exports.updateTicket = updateTicket;
