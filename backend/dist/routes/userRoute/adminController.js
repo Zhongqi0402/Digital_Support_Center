@@ -39,6 +39,7 @@ exports.getAllTickets = (0, express_async_handler_1.default)((req, res) => __awa
             },
             include: [UserModel_1.default, ProductModel_1.default],
             attributes: ['createdAt', 'Product.type', 'status', 'User.name'],
+            order: [['createdAt', 'DESC']],
         });
         res.status(200).json(tickets);
     }

@@ -39,6 +39,7 @@ const getTickets = (0, express_async_handler_1.default)((req, res) => __awaiter(
         },
         include: [UserModel_1.default, ProductModel_1.default],
         attributes: ['createdAt', 'Product.type', 'status', 'User.name'],
+        order: [['createdAt', 'DESC']],
     });
     res.status(200).json(tickets);
 }));
@@ -103,6 +104,10 @@ const createTicket = (0, express_async_handler_1.default)((req, res) => __awaite
     if (!user) {
         res.status(401);
         throw new Error('User not found');
+    }
+    if (user.getDataValue('isAdmin') === true) {
+        res.status(400);
+        throw new Error('Admin User cannot create ticket');
     }
     const ticket = yield TicketModel_1.default.create({
         productID,

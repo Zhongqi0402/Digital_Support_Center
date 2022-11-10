@@ -46,6 +46,7 @@ const getTickets = asyncHandler(
       },
       include: [User, Product],
       attributes: ['createdAt', 'Product.type', 'status', 'User.name'],
+      order: [['createdAt', 'DESC']],
     })
 
     res.status(200).json(tickets)
@@ -124,6 +125,11 @@ const createTicket = asyncHandler(
     if (!user) {
       res.status(401)
       throw new Error('User not found')
+    }
+
+    if (user.getDataValue('isAdmin') === true) {
+      res.status(400)
+      throw new Error('Admin User cannot create ticket')
     }
 
     const ticket = await Ticket.create({

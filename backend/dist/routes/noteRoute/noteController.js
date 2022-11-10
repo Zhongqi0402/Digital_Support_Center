@@ -39,6 +39,7 @@ exports.getNotes = (0, express_async_handler_1.default)((req, res) => __awaiter(
             where: {
                 ticketID: req.params.ticketId,
             },
+            order: [['createdAt', 'DESC']],
         });
         res.status(200).json(notes);
     }

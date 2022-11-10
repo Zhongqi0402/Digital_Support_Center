@@ -44,6 +44,7 @@ export const getAllTickets = asyncHandler(
         },
         include: [User, Product],
         attributes: ['createdAt', 'Product.type', 'status', 'User.name'],
+        order: [['createdAt', 'DESC']],
       })
       res.status(200).json(tickets)
     } catch (error) {
