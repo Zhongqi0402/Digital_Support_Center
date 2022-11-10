@@ -49,6 +49,8 @@ If you want to test backend API endpoints, please use Postman.
 
 run `npm build` first, and then `npm run dev`. Note that by default, the backend would start in `localhost:50000`. The compiled javascript code (from typescript) would be saved to `/backend/dist` folder.
 
+Alternatively, run the bash files inside the backend folder. `./backend/runSampleImage.sh` or `./backend/runProductionImage.sh`
+
 
 ### Code Organization
 
