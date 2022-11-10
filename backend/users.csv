@@ -1,5 +1,5 @@
-﻿1,John Doe,johndoe@gmail.com,123,FALSE
-2,Jane Doe,jamedoe@gmail.com,345,FALSE
-3,Andrew Zang,x5zang@uwaterloo.ca,and,FALSE
-4,Matthew Yue,z3yue@uwaterloo.ca,rew,TRUE
-5,Tim,tim@hortons.ca,hortons,FALSE
+﻿1,John Doe,johndoe@gmail.com,123,1
+2,Jane Doe,jamedoe@gmail.com,345,0
+3,Andrew Zang,x5zang@uwaterloo.ca,and,1
+4,Matthew Yue,z3yue@uwaterloo.ca,rew,0
+5,Tim,tim@hortons.ca,hortons,0
