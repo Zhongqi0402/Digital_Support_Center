@@ -1,8 +1,8 @@
 import express from 'express'
 const router = express.Router({ mergeParams: true })
-const { getNotes, addNote } = require('./noteController')
+import { getNotes, addNote } from './noteController'
 
-const { protect } = require('../middleware/authMiddleware')
+import protect from '../../middleware/authMiddleware'
 
 router.route('/').get(protect, getNotes).post(protect, addNote)
 
