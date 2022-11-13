@@ -75,7 +75,7 @@ const registerUser = asyncHandler(
       email,
       password: hashedPassword,
     })
-    // console.log(user.getDataValue('name'))
+
     if (user) {
       res.status(201).json({
         _id: user.getDataValue('id'),
@@ -128,7 +128,7 @@ const loginUser = asyncHandler(
 const getCurrentUser = asyncHandler(
   async (req: CurrentUserRequest, res: Response) => {
     const user = {
-      id: req.user ? req.user._id : null,
+      _id: req.user ? req.user._id : null,
       email: req.user ? req.user.email : null,
       name: req.user ? req.user.name : null,
     }

@@ -5,9 +5,6 @@ import User from '../userRoute/UserModel'
 import Product from './ProductModel'
 import Ticket from './TicketModel'
 
-// interface CustomRequest<T> extends Request {
-//   body: T
-// }
 interface RequestUser {
   _id: number
   email: string
@@ -29,14 +26,6 @@ interface CurrentUserRequest extends Request {
 const getTickets = asyncHandler(
   async (req: CurrentUserRequest, res: Response) => {
     // Get user using the id in the JWT
-    // ----------------------------------------------------------------------
-    // testing usage only
-    // req.user = {
-    //   _id: 1,
-    //   email: 'johndoe@gmail.com',
-    //   name: 'John Doe',
-    // }
-    // ----------------------------------------------------------------------
 
     const userID = req.user ? req.user._id : 0
     const user = await User.findOne({
@@ -52,8 +41,12 @@ const getTickets = asyncHandler(
 
     const tickets = await Ticket.findAll({
       where: {
-        userID: req.user ? req.user._id : 0,
+        status: 'open',
+        userID: userID,
       },
+      include: [User, Product],
+      attributes: ['createdAt', 'Product.type', 'status', 'User.name'],
+      order: [['createdAt', 'DESC']],
     })
 
     res.status(200).json(tickets)
@@ -66,14 +59,6 @@ const getTickets = asyncHandler(
 const getTicket = asyncHandler(
   async (req: CurrentUserRequest, res: Response) => {
     // Get user using the id in the JWT
-    // ----------------------------------------------------------------------
-    // testing usage only
-    // req.user = {
-    //   _id: 1,
-    //   email: 'johndoe@gmail.com',
-    //   name: 'John Doe',
-    // }
-    // ----------------------------------------------------------------------
     const userID = req.user ? req.user._id : 0
     const user = await User.findOne({
       where: {
@@ -86,11 +71,17 @@ const getTicket = asyncHandler(
       throw new Error('User not found')
     }
 
-    const ticket = await Ticket.findOne({
-      where: {
-        id: req.params.id,
-      },
-      include: Product,
+    const ticket = await Ticket.findByPk(req.params.id, {
+      include: [User, Product],
+      attributes: [
+        'id',
+        'createdAt',
+        'User.name',
+        'userID',
+        'status',
+        'Product.type',
+        'description',
+      ],
     })
 
     if (!ticket) {
@@ -98,7 +89,9 @@ const getTicket = asyncHandler(
       throw new Error('Ticket not found')
     }
 
-    if (ticket.getDataValue('userID') !== userID) {
+    if (parseInt(ticket.getDataValue('userID')) !== userID) {
+      console.log(ticket.getDataValue('userID'))
+      console.log(userID)
       res.status(401)
       throw new Error('Not Authorized')
     }
@@ -112,14 +105,6 @@ const getTicket = asyncHandler(
 // @access  Private
 const createTicket = asyncHandler(
   async (req: CurrentUserRequest, res: Response) => {
-    // ----------------------------------------------------------------------
-    // testing usage only
-    // req.user = {
-    //   _id: 1,
-    //   email: 'johndoe@gmail.com',
-    //   name: 'John Doe',
-    // }
-    // ----------------------------------------------------------------------
     const { product, description } = req.body
 
     const productID = product.id
@@ -142,6 +127,11 @@ const createTicket = asyncHandler(
       throw new Error('User not found')
     }
 
+    if (user.getDataValue('isAdmin') === true) {
+      res.status(400)
+      throw new Error('Admin User cannot create ticket')
+    }
+
     const ticket = await Ticket.create({
       productID,
       description,
@@ -149,7 +139,19 @@ const createTicket = asyncHandler(
       status: 'open',
     })
 
-    res.status(201).json(ticket)
+    const justCreatedTicket = await Ticket.findByPk(ticket.getDataValue('id'), {
+      include: [User, Product],
+      attributes: [
+        'id',
+        'createdAt',
+        'User.name',
+        'status',
+        'Product.type',
+        'description',
+      ],
+    })
+
+    res.status(201).json(justCreatedTicket)
   }
 )
 
@@ -158,14 +160,6 @@ const createTicket = asyncHandler(
 // @access  Private
 const deleteTicket = asyncHandler(
   async (req: CurrentUserRequest, res: Response) => {
-    // ----------------------------------------------------------------------
-    // testing usage only
-    // req.user = {
-    //   _id: 1,
-    //   email: 'johndoe@gmail.com',
-    //   name: 'John Doe',
-    // }
-    // ----------------------------------------------------------------------
     // Get user using the id in the JWT
     const userID = req.user ? req.user._id : 0
     const user = await User.findOne({
@@ -202,15 +196,6 @@ const deleteTicket = asyncHandler(
 // @access  Private
 const updateTicket = asyncHandler(
   async (req: CurrentUserRequest, res: Response) => {
-    // ----------------------------------------------------------------------
-    // testing usage only
-    req.user = {
-      _id: 1,
-      email: 'johndoe@gmail.com',
-      name: 'John Doe',
-    }
-    // ----------------------------------------------------------------------
-
     // Get user using the id in the JWT
     const userID = req.user ? req.user._id : 0
     const user = await User.findByPk(userID)
@@ -222,6 +207,14 @@ const updateTicket = asyncHandler(
 
     const updatedDescription = req.body.description
     const updatedStatus = req.body.status
+    if (
+      updatedStatus !== 'open' &&
+      updatedStatus !== 'closed' &&
+      updatedStatus !== 'archived'
+    ) {
+      res.status(401)
+      throw new Error('Updated Status is not one of open, closed or archived')
+    }
 
     Ticket.findByPk(req.params.id)
       .then((ticket) => {
@@ -243,7 +236,9 @@ const updateTicket = asyncHandler(
         console.log('UPDATED TICKETS')
         res.status(200).json(result)
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        console.log(err)
+      })
   }
 )
 

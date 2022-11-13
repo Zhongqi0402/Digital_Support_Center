@@ -1,0 +1,1 @@
+docker build -t 348-backend .

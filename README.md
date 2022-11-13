@@ -49,7 +49,13 @@ If you want to test backend API endpoints, please use Postman.
 
 run `npm build` first, and then `npm run dev`. Note that by default, the backend would start in `localhost:50000`. The compiled javascript code (from typescript) would be saved to `/backend/dist` folder.
 
+Alternatively, run the bash files inside the backend folder. `./backend/runSampleImage.sh` or `./backend/runProductionImage.sh`
+
 
 ### Code Organization
 
 All backend requests are organized by routes. And Each route under the `routes` folder has three files. One for different requests under the big route, and a controller file and a model file to add functionalities.
+
+### API Request Example
+
+backend request examples can be found under `backend/exampleAPI`

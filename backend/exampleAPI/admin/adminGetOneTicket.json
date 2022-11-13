@@ -1,0 +1,23 @@
+{
+  "id": 2,
+  "createdAt": "2022-11-09T15:49:34.000Z",
+  "status": "closed",
+  "description": "no signal",
+  "user": {
+    "id": 1,
+    "name": "John Doe",
+    "email": "johndoe@gmail.com",
+    "password": "$2a$10$1a84k9XEmI33XsGvNck/ueXmKYa4.gDRMkhGiVq1qiXQaxRNjfMqi",
+    "isAdmin": true,
+    "createdAt": "2022-11-09T15:49:34.000Z",
+    "updatedAt": "2022-11-09T15:49:34.000Z"
+  },
+  "product": {
+    "id": 3,
+    "manufacturer": "apple",
+    "type": "laptop",
+    "colour": "golden",
+    "createdAt": "2022-11-09T15:49:34.000Z",
+    "updatedAt": "2022-11-09T15:49:34.000Z"
+  }
+}
