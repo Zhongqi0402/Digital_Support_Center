@@ -9,6 +9,7 @@ import sequelize from './database'
 import User from './routes/userRoute/UserModel'
 import Product from './routes/ticketRoute/ProductModel'
 import Ticket from './routes/ticketRoute/TicketModel'
+import Note from './routes/noteRoute/NoteModel'
 
 dotenv.config()
 
@@ -24,6 +25,7 @@ app.get('/', (req: Request, res: Response) => {
 })
 app.use('/api/users', require('./routes/userRoute/userRoute'))
 app.use('/api/tickets', require('./routes/ticketRoute/ticketRoute'))
+app.use('/api/admin', require('./routes/userRoute/adminRoute'))
 
 // ----------------------------------------------
 // preprocess csv files
@@ -43,22 +45,13 @@ const runDB = async () => {
       })
       const salt: string = await bcrypt.genSalt(10)
 
-      // userData = userData.map(async (row: any) => {
-      //   const hashedPassword = await bcrypt.hash(row.password, salt)
-      //   return {
-      //     ...row,
-      //     id: parseInt(row.id),
-      //     isAdmin: Boolean(row.isAdmin),
-      //     password: hashedPassword,
-      //   }
-      // })
       userData = await Promise.all(
         userData.map(async (row: any) => {
           const hashedPassword = await bcrypt.hash(row.password, salt)
           return {
             ...row,
             id: parseInt(row.id),
-            isAdmin: Boolean(row.isAdmin),
+            isAdmin: Boolean(row.isAdmin == 1),
             password: hashedPassword,
           }
         })
@@ -68,8 +61,6 @@ const runDB = async () => {
 
       // products.csv
       const productFilePath = path.resolve(__dirname, '..', 'products.csv')
-      // console.log('filePath: ', productFilePath)
-      // id,manufacturer,type,colour
       const productHeaders = ['id', 'manufacturer', 'type', 'colour']
       const productContent = fs.readFileSync(productFilePath, {
         encoding: 'utf-8',
@@ -86,8 +77,6 @@ const runDB = async () => {
 
       // tickets.csv
       const ticketsFilePath = path.resolve(__dirname, '..', 'tickets.csv')
-      // console.log('filePath: ', ticketsFilePath)
-      // id,manufacturer,type,colour
       const ticketsHeaders = [
         'id',
         'userID',
@@ -112,10 +101,39 @@ const runDB = async () => {
       })
       // console.log(ticketsData)
       await Ticket.bulkCreate(ticketsData)
+
+      const notesFilePath = path.resolve(__dirname, '..', 'notes.csv')
+      const notesHeaders = ['id', 'ticketID', 'text', 'isStaff']
+      const notesContent = fs.readFileSync(notesFilePath, {
+        encoding: 'utf-8',
+      })
+      let notesData = parse(notesContent, {
+        delimiter: ',',
+        columns: notesHeaders,
+      })
+      notesData = notesData.map((row: any) => {
+        return {
+          ...row,
+          id: parseInt(row.id),
+          ticketID: parseInt(row.ticketID),
+          isStaff: Boolean(row.isStaff == 1),
+        }
+      })
+      await Note.bulkCreate(notesData)
     }
-    Product.hasMany(Ticket)
-    Ticket.belongsTo(Product)
-    app.listen(port)
+    User.hasMany(Ticket, { foreignKey: 'userID' })
+    Ticket.belongsTo(User, { foreignKey: 'userID' })
+
+    Product.hasMany(Ticket, { foreignKey: 'productID' })
+    Ticket.belongsTo(Product, { foreignKey: 'productID' })
+
+    Ticket.hasMany(Note, { foreignKey: 'ticketID' })
+    Note.belongsTo(Ticket, { foreignKey: 'ticketID' })
+    const server = app.listen(port)
+    const io = require('./socket').init(server)
+    io.on('connection', () => {
+      console.log('Client connected')
+    })
     console.log(`⚡️[server]: Server is running at https://localhost:${port}`)
   } catch (error) {
     console.log(error)
