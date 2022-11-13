@@ -5,6 +5,7 @@ import { useState, useEffect} from 'react'
 import { createTicket, reset } from '../features/tickets/ticketSlice'
 import { toast } from 'react-toastify'
 
+
 const NewTicket: FC<any> = () => {
     const { user } = useSelector((state: any) => state.auth)
     const { isLoading, isError, isSuccess, message } = useSelector(
@@ -13,9 +14,9 @@ const NewTicket: FC<any> = () => {
 
     const [name] = useState(user.name)
     const [email] = useState(user.email)
-    const [product, setProduct] = useState('')
-    const [type, setType] = useState('')
-    const [colour, setColour] = useState('')
+    const [manufacturer, setManufacturer] = useState('Apple')
+    const [type, setType] = useState('Laptop')
+    const [colour, setColour] = useState('Silver')
     const [description, setDescription] = useState('')
 
     const dispatch: any = useDispatch()
@@ -25,7 +26,7 @@ const NewTicket: FC<any> = () => {
         if (isError) {
             toast.error(message)
         }
-
+        console.log("is success", isSuccess)
         if (isSuccess) {
             dispatch(reset())
             navigate('/tickets')
@@ -36,7 +37,12 @@ const NewTicket: FC<any> = () => {
 
     const onSubmit = (e: any) => {
         e.preventDefault()
-        dispatch(createTicket({ product, type, colour, description }))
+        const product = {manufacturer, 
+            type: type.toLowerCase(), colour:colour.toLowerCase()}
+        // console.log("submit")
+        // const postData = { product, description }
+        // console.log( postData )
+        dispatch(createTicket({ product, description }))
     }
 
     return (
@@ -61,8 +67,8 @@ const NewTicket: FC<any> = () => {
                         <select
                             name='product'
                             id='product'
-                            value={product}
-                            onChange={(e) => setProduct(e.target.value)}
+                            value={manufacturer}
+                            onChange={(e) => setManufacturer(e.target.value)}
                         >
                             <option value='Apple'>Apple</option>
                             <option value='Samsung'>Samsung</option>

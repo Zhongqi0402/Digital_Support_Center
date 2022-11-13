@@ -218,7 +218,7 @@ h3 {
 .ticket,
 .ticket-headings {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 20px;
   justify-content: space-between;
   align-items: center;
@@ -232,7 +232,7 @@ h3 {
 .staff-ticket,
 .staff-ticket-headings {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   gap: 20px;
   justify-content: space-between;
   align-items: center;
