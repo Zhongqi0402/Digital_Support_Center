@@ -40,9 +40,8 @@ const Login: FC<any> = () => {
     )
 
     useEffect(() => {
-        console.log("here", isError)
         if (isError) {
-          toast.error(message)
+          toast.error("Invalid Username and password pair!")
         }
     
         // Redirect when logged in
@@ -93,7 +92,7 @@ const Login: FC<any> = () => {
                     />
                 </div>
                 <div className='form-group'>
-                    <button className='btn btn-block'>Submit</button>
+                    <button className='btn btn-block'>Let Me In!!</button>
                 </div>
             </form>
         </section>
