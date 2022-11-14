@@ -21,4 +21,5 @@ const sequelize: Sequelize = new Sequelize(
   }
 )
 
+
 export default sequelize

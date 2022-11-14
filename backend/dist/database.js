@@ -8,8 +8,12 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 // const connection = await mysql.createConnection({ "34.136.221.76", port, user, password });
 // pool, but managed by sequelize library
+<<<<<<< HEAD
+const sequelize = new sequelize_1.Sequelize('348-project', 'root', 'Yzq010402,.,.', {
+=======
 const sequelize = new sequelize_1.Sequelize(`${process.env.DB_NAME}`, 'Andrew', '', {
     host: `${process.env.HOST}`,
+>>>>>>> cf5bc17fc2046084482719bdbbe306447db839c5
     dialect: 'mysql',
     pool: {
         max: 5,
