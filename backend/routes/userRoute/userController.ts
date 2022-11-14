@@ -60,7 +60,8 @@ const registerUser = asyncHandler(
     })
 
     if (userExists) {
-      res.status(400)
+      res.statusMessage = 'User Already Registered'
+      res.status(400).end()
       throw new Error('User already Registered')
     }
 

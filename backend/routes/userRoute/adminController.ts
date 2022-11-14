@@ -43,7 +43,7 @@ export const getAllTickets = asyncHandler(
           status: 'open',
         },
         include: [User, Product],
-        attributes: ['createdAt', 'Product.type', 'status', 'User.name'],
+        attributes: ['id', 'createdAt', 'product.type', 'status', 'user.name'],
         order: [['createdAt', 'DESC']],
       })
       res.status(200).json(tickets)
@@ -76,9 +76,9 @@ export const getTicket = asyncHandler(
         attributes: [
           'id',
           'createdAt',
-          'User.name',
+          'user.name',
           'status',
-          'Product.type',
+          'product.type',
           'description',
         ],
       })

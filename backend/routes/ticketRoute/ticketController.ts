@@ -45,8 +45,6 @@ const getTickets = asyncHandler(
         userID: userID,
       },
       include: [User, Product],
-      attributes: ['createdAt', 'Product.type', 'status', 'User.name'],
-      order: [['createdAt', 'DESC']],
     })
 
     res.status(200).json(tickets)
@@ -76,10 +74,12 @@ const getTicket = asyncHandler(
       attributes: [
         'id',
         'createdAt',
-        'User.name',
+        'user.name',
         'userID',
         'status',
-        'Product.type',
+        'product.type',
+        // 'product.manufacturer',
+        // 'product.colour',
         'description',
       ],
     })
@@ -96,6 +96,11 @@ const getTicket = asyncHandler(
       throw new Error('Not Authorized')
     }
 
+    // const returnValue = {
+    //   id: ticket.getDataValue('id'),
+    //   productType: ticket.get(''),
+    // }
+
     res.status(200).json(ticket)
   }
 )
@@ -107,51 +112,74 @@ const createTicket = asyncHandler(
   async (req: CurrentUserRequest, res: Response) => {
     const { product, description } = req.body
 
-    const productID = product.id
-
     if (!product || !description) {
       res.status(400)
       throw new Error('Please add a product and description')
     }
+    let productID
+    try {
+      const productManufacturer = product.manufacturer
+      const productType = product.type
+      const productColour = product.colour
 
-    // Get user using the id in the JWT
-    const userID = req.user ? req.user._id : 0
-    const user = await User.findOne({
-      where: {
-        id: userID,
-      },
-    })
+      const productInDB = await Product.findOne({
+        where: {
+          manufacturer: productManufacturer,
+          type: productType,
+          colour: productColour,
+        },
+        attributes: ['id'],
+      })
 
-    if (!user) {
-      res.status(401)
-      throw new Error('User not found')
+      if (!productInDB) throw new Error('Product Not found')
+
+      productID = productInDB.getDataValue('id')
+      // Get user using the id in the JWT
+      const userID = req.user ? req.user._id : 0
+      const user = await User.findOne({
+        where: {
+          id: userID,
+        },
+      })
+
+      if (!user) {
+        res.status(401)
+        throw new Error('User not found')
+      }
+
+      if (user.getDataValue('isAdmin') === true) {
+        res.status(400)
+        throw new Error('Admin User cannot create ticket')
+      }
+
+      const ticket = await Ticket.create({
+        productID,
+        description,
+        userID,
+        status: 'open',
+      })
+
+      const justCreatedTicket = await Ticket.findByPk(
+        ticket.getDataValue('id'),
+        {
+          include: [User, Product],
+          // attributes: [
+          //   'id',
+          //   'createdAt',
+          //   'user.name',
+          //   'status',
+          //   'product.type',
+          //   'product.colour',
+          //   'product.manufacturer',
+          //   'description',
+          // ],
+        }
+      )
+
+      res.status(201).json(justCreatedTicket)
+    } catch (error) {
+      console.log(error)
     }
-
-    if (user.getDataValue('isAdmin') === true) {
-      res.status(400)
-      throw new Error('Admin User cannot create ticket')
-    }
-
-    const ticket = await Ticket.create({
-      productID,
-      description,
-      userID,
-      status: 'open',
-    })
-
-    const justCreatedTicket = await Ticket.findByPk(ticket.getDataValue('id'), {
-      include: [User, Product],
-      attributes: [
-        'id',
-        'createdAt',
-        'User.name',
-        'status',
-        'Product.type',
-        'description',
-      ],
-    })
-
-    res.status(201).json(justCreatedTicket)
   }
 )
 
@@ -230,6 +258,11 @@ const updateTicket = asyncHandler(
         return ticket.update({
           description: updatedDescription,
           status: updatedStatus,
+        })
+      })
+      .then((result) => {
+        return Ticket.findByPk(result.getDataValue('id'), {
+          include: [User, Product],
         })
       })
       .then((result) => {

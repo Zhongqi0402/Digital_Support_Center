@@ -1,0 +1,2 @@
+id,userID,productID,description,status,createdAt,updatedAt,user.id,user.name,user.email,user.password,user.isAdmin,user.createdAt,user.updatedAt,product.id,product.manufacturer,product.type,product.colour,product.createdAt,product.updatedAt
+1,1,2,"battery outrage",open,"2022-11-10 15:18:36","2022-11-10 15:18:36",1,"John Doe",johndoe@gmail.com,$2a$10$vUgaEP/dL7pVfM0vVG1GDOYL6MARJpXyswzJCRdx4O8EDq/kULGWy,1,"2022-11-10 15:18:36","2022-11-10 15:18:36",2,apple,phone,silver,"2022-11-10 15:18:36","2022-11-10 15:18:36"

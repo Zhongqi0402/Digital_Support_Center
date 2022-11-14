@@ -1,0 +1,2 @@
+id,name,email,password,isAdmin,createdAt,updatedAt
+22018,Andrew,test@gmail.ca,123456,0,"2022-11-13 21:46:44","2022-11-13 21:46:44"

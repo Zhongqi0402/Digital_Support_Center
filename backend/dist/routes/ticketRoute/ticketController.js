@@ -38,8 +38,6 @@ const getTickets = (0, express_async_handler_1.default)((req, res) => __awaiter(
             userID: userID,
         },
         include: [UserModel_1.default, ProductModel_1.default],
-        attributes: ['createdAt', 'Product.type', 'status', 'User.name'],
-        order: [['createdAt', 'DESC']],
     });
     res.status(200).json(tickets);
 }));
@@ -64,10 +62,12 @@ const getTicket = (0, express_async_handler_1.default)((req, res) => __awaiter(v
         attributes: [
             'id',
             'createdAt',
-            'User.name',
+            'user.name',
             'userID',
             'status',
-            'Product.type',
+            'product.type',
+            // 'product.manufacturer',
+            // 'product.colour',
             'description',
         ],
     });
@@ -81,6 +81,10 @@ const getTicket = (0, express_async_handler_1.default)((req, res) => __awaiter(v
         res.status(401);
         throw new Error('Not Authorized');
     }
+    // const returnValue = {
+    //   id: ticket.getDataValue('id'),
+    //   productType: ticket.get(''),
+    // }
     res.status(200).json(ticket);
 }));
 exports.getTicket = getTicket;
@@ -89,44 +93,65 @@ exports.getTicket = getTicket;
 // @access  Private
 const createTicket = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { product, description } = req.body;
-    const productID = product.id;
     if (!product || !description) {
         res.status(400);
         throw new Error('Please add a product and description');
     }
-    // Get user using the id in the JWT
-    const userID = req.user ? req.user._id : 0;
-    const user = yield UserModel_1.default.findOne({
-        where: {
-            id: userID,
-        },
-    });
-    if (!user) {
-        res.status(401);
-        throw new Error('User not found');
+    let productID;
+    try {
+        const productManufacturer = product.manufacturer;
+        const productType = product.type;
+        const productColour = product.colour;
+        const productInDB = yield ProductModel_1.default.findOne({
+            where: {
+                manufacturer: productManufacturer,
+                type: productType,
+                colour: productColour,
+            },
+            attributes: ['id'],
+        });
+        if (!productInDB)
+            throw new Error('Product Not found');
+        productID = productInDB.getDataValue('id');
+        // Get user using the id in the JWT
+        const userID = req.user ? req.user._id : 0;
+        const user = yield UserModel_1.default.findOne({
+            where: {
+                id: userID,
+            },
+        });
+        if (!user) {
+            res.status(401);
+            throw new Error('User not found');
+        }
+        if (user.getDataValue('isAdmin') === true) {
+            res.status(400);
+            throw new Error('Admin User cannot create ticket');
+        }
+        const ticket = yield TicketModel_1.default.create({
+            productID,
+            description,
+            userID,
+            status: 'open',
+        });
+        const justCreatedTicket = yield TicketModel_1.default.findByPk(ticket.getDataValue('id'), {
+            include: [UserModel_1.default, ProductModel_1.default],
+            // attributes: [
+            //   'id',
+            //   'createdAt',
+            //   'user.name',
+            //   'status',
+            //   'product.type',
+            //   'product.colour',
+            //   'product.manufacturer',
+            //   'description',
+            // ],
+        });
+        res.status(201).json(justCreatedTicket);
     }
-    if (user.getDataValue('isAdmin') === true) {
-        res.status(400);
-        throw new Error('Admin User cannot create ticket');
+    catch (error) {
+        console.log(error);
     }
-    const ticket = yield TicketModel_1.default.create({
-        productID,
-        description,
-        userID,
-        status: 'open',
-    });
-    const justCreatedTicket = yield TicketModel_1.default.findByPk(ticket.getDataValue('id'), {
-        include: [UserModel_1.default, ProductModel_1.default],
-        attributes: [
-            'id',
-            'createdAt',
-            'User.name',
-            'status',
-            'Product.type',
-            'description',
-        ],
-    });
-    res.status(201).json(justCreatedTicket);
 }));
 exports.createTicket = createTicket;
 // @desc    Delete ticket
@@ -189,6 +214,11 @@ const updateTicket = (0, express_async_handler_1.default)((req, res) => __awaite
         return ticket.update({
             description: updatedDescription,
             status: updatedStatus,
+        });
+    })
+        .then((result) => {
+        return TicketModel_1.default.findByPk(result.getDataValue('id'), {
+            include: [UserModel_1.default, ProductModel_1.default],
         });
     })
         .then((result) => {

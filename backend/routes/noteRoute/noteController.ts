@@ -47,7 +47,7 @@ export const getNotes = asyncHandler(
         where: {
           ticketID: req.params.ticketId,
         },
-        order: [['createdAt', 'DESC']],
+        order: [['createdAt', 'ASC']],
       })
       res.status(200).json(notes)
     } else {
