@@ -14,4 +14,5 @@ const sequelize: Sequelize = new Sequelize(`${process.env.DB_NAME}`, 'Andrew', '
   },
 })
 
+
 export default sequelize
