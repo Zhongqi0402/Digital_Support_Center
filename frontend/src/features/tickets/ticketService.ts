@@ -9,15 +9,22 @@ const createTicket = async (ticketData: any, token: any) => {
       Authorization: `Bearer ${token}`,
     },
   }
-  // try {
+
   const response = await axios.post(API_URL, ticketData, config)
-  return response.data
-  // }
-  // catch(error) {
-  //   console.log("error", error)
-  // }
-  
-  
+  return response.data 
+}
+
+// update new ticket
+const updateTicket = async (ticketData: any, token: any) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+  const CUR_URL = API_URL + `/${ticketData.id}`
+  const sentData = {description: ticketData.description, status: ticketData.status}
+  const response = await axios.put(CUR_URL, sentData, config)
+  return response.data 
 }
 
 // Get user tickets
@@ -91,6 +98,7 @@ const ticketService = {
     getTicket,
     closeTicket,
     getAllTickets,
+    updateTicket
     // adminGetTicket
 }
 

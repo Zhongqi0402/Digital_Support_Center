@@ -3,7 +3,7 @@ import { toast } from 'react-toastify'
 import Modal from 'react-modal'
 import { FaPlus } from 'react-icons/fa'
 import { useSelector, useDispatch } from 'react-redux'
-import { getTicket, closeTicket } from '../features/tickets/ticketSlice'
+import { getTicket, closeTicket, updateTicket } from '../features/tickets/ticketSlice'
 import GoBackButton from '../components/GoBackButton'
 import { useParams, useNavigate } from 'react-router-dom'
 import Spinner from '../components/Spinner'
@@ -27,6 +27,7 @@ function Ticket() {
   const { ticket, isLoading, isSuccess, isError, message } = useSelector(
     (state: any) => state.tickets
   )
+  
   const { notes, isLoading: notesIsLoading } = useSelector(
     (state: any) => state.notes
   )
@@ -35,7 +36,8 @@ function Ticket() {
   const dispatch : any = useDispatch()
   const { ticketId } = useParams()
   const navigate = useNavigate()
-  
+  //var oldDescription = ticket.description.toString()
+  const [newDescription, setNewDescription] = useState()
 
 //   useEffect(() => {
 //     const newSocket = openSocket('/');
@@ -58,6 +60,7 @@ function Ticket() {
     dispatch(getNotes(ticketId))
     // eslint-disable-next-line
   }, [isError, message, ticketId])
+
   if ( Object.keys(ticket).length === 0 ){
     dispatch(getTicket(ticketId))
     dispatch(getNotes(ticketId))
@@ -76,10 +79,20 @@ function Ticket() {
     closeModal()
   }
 
+  const onTicketUpdate = (e: any) => {
+    e.preventDefault()
+    dispatch(updateTicket({ description: newDescription, status: ticket.status, id: ticketId} ))
+    closeModal()
+    if ( Object.keys(ticket).length === 0 ){
+      dispatch(getTicket(ticketId))
+      dispatch(getNotes(ticketId))
+    }
+  }
+
   // Open/close modal
   const openModal = () => setModalIsOpen(true)
   const closeModal = () => setModalIsOpen(false)
-
+  console.log(ticket)
 
   
   if (isLoading) {
@@ -160,6 +173,50 @@ function Ticket() {
       {notes.map((note : any) => (
         <NoteItem key={note.id} note={note} />
       ))}
+
+      {ticket.status !== 'closed' && (
+        <button onClick={openModal} className='btn btn-block'>
+          Update Ticket
+      </button>
+      )}
+
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        style={{content: {
+            width: '600px',
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+            position: 'relative',
+          },}}
+        contentLabel='Add Note'
+      >
+        <h2>Update ticket</h2>
+        <button className='btn-close' onClick={closeModal}>
+          X
+        </button>
+        <form onSubmit={onTicketUpdate}>
+          <div className='form-group'>
+            <textarea
+              name='noteText'
+              id='noteText'
+              className='form-control'
+              placeholder= 'new description'
+              value={newDescription}
+              onChange={(e:any) => setNewDescription(e.target.value)}
+            ></textarea>
+          </div>
+          <div className='form-group'>
+            <button className='btn' type='submit'>
+              Update
+            </button>
+          </div>
+        </form>
+      </Modal>
 
 
 

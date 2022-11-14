@@ -31,6 +31,7 @@ const Home: FC<any> = () => {
       {<Link to={user && user.isAdmin ? '/admin/tickets' : '/tickets'} className='btn btn-block'>
         <FiUserCheck /> Admin User Click here
       </Link>}
+    
     </>
   );
 };

@@ -55,8 +55,10 @@ h3 {
   justify-content: space-between;
   align-items: center;
   padding: 20px 0;
+  background: #90c2e9;
   border-bottom: 1px solid #e6e6e6;
   margin-bottom: 60px;
+
 }
 
 .header ul {
@@ -87,10 +89,12 @@ h3 {
   font-weight: 700;
   margin-bottom: 50px;
   padding: 0 20px;
+  text-align: center;
+  color: #679ac1;
 }
 
 .heading p {
-  color: #828282;
+  color: #679ac1;
 }
 
 .boxes {
@@ -114,7 +118,7 @@ h3 {
 }
 
 .boxes a:hover {
-  color: #777;
+  color: rgb(56, 20, 183);
 }
 
 .form {
@@ -145,10 +149,10 @@ h3 {
 
 .btn {
   padding: 10px 20px;
-  border: 1px solid #000;
+  border: 1px solid rgb(24, 111, 232);
   border-radius: 5px;
-  background: #000;
-  color: #fff;
+  background: rgb(230, 236, 128);
+  color: rgb(41, 35, 35);
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
@@ -164,28 +168,31 @@ h3 {
 }
 
 .btn-reverse {
-  background: #fff;
-  color: #000;
+  background: rgb(230, 236, 128);
+  color: rgb(41, 35, 35);
 }
 
 .btn-block {
   width: 100%;
   margin-bottom: 20px;
+  color: rgb(41, 35, 35);
 }
 
 .btn-sm {
   padding: 5px 15px;
   font-size: 13px;
+  color: rgb(41, 35, 35);
 }
 
 .btn-danger {
-  background: darkred;
+  background: rgba(240, 24, 24, 0.85);
   border: none;
 }
 
 .btn-back {
   width: 150px;
   margin-bottom: 20px;
+  color: rgb(41, 35, 35);
 }
 
 .btn:hover {
@@ -219,12 +226,12 @@ h3 {
 .ticket-headings {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 20px;
+  gap: 10px;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  background: #f4f4f4;
-  padding: 10px 15px;
+  background: #90c2e9;
+  padding: 10px 10px;
   border-radius: 5px;
   text-align: center;
 }
@@ -265,7 +272,7 @@ h3 {
 }
 
 .status-open {
-  background-color: steelblue;
+  background-color: rgb(19, 119, 233);
   color: #fff;
   border-radius: 10px;
 }
@@ -278,7 +285,7 @@ h3 {
 
 .ticket-page {
   position: relative;
-  text-align: left;
+  text-align: center;
 }
 
 .ticket-page h2 {
@@ -299,8 +306,8 @@ h3 {
 .ticket-desc {
   margin: 20px 0;
   font-size: 17px;
-  background-color: #f4f4f4;
-  border: 1px #ccc solid;
+  background-color: #d6e4d3;
+  border: 2px rgb(230, 236, 128) solid;
   padding: 10px 15px;
   border-radius: 5px;
 }
@@ -418,10 +425,12 @@ footer {
 
   .ticket-created h2,
   .heading h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
+    color: aquamarine;
   }
 
   .heading p {
     font-size: 1.5rem;
+    color: aquamarine;
   }
 }

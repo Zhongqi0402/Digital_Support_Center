@@ -55,9 +55,28 @@ export const getTicket = createAsyncThunk(
   'tickets/get',
   async (ticketId: any, thunkAPI: any) => {
     try {
-      console.log(ticketId)
       const token = thunkAPI.getState().auth.user.token
       return await ticketService.getTicket(ticketId, token)
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
+// // Update user ticket
+export const updateTicket = createAsyncThunk(
+  'tickets/update',
+  async (newDescription: any, thunkAPI: any) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token
+      return await ticketService.updateTicket(newDescription, token)
     } catch (error: any) {
       const message =
         (error.response &&
@@ -174,6 +193,19 @@ export const ticketSlice = createSlice({
         state.ticket = action.payload
       })
       .addCase(getTicket.rejected, (state: any, action: any) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(updateTicket.pending, (state: any) => {
+        state.isLoading = true
+      })
+      .addCase(updateTicket.fulfilled, (state: any, action: any) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.ticket = action.payload
+      })
+      .addCase(updateTicket.rejected, (state: any, action: any) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload

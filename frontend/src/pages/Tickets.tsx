@@ -37,7 +37,6 @@ function Tickets() {
     
     return (
       <>
-      <h1>Tickets</h1>
         
         <BackButton url='/' />
         <h1>{user && user.isAdmin ? 'Staff View All' : <></>} Tickets</h1>

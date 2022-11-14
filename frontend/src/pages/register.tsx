@@ -28,7 +28,14 @@ function Register() {
     
     if (password !== password2) {
         toast.error('Passwords do not match')
-    } else {
+    } 
+    else if (email === '') {
+      toast.error('email can not be empty')
+    }
+    else if (password === '' || password.length <= 2) {
+      toast.error('password can not be empty and must be longer than 2')
+    }
+    else {
         const userData = {
             name,
             email,
@@ -52,7 +59,7 @@ function Register() {
   
   useEffect(() => {
     if (isError) {
-      toast.error(message)
+      toast.error("User email already exists")
     }
 
     // Redirect when logged in
