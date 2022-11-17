@@ -64,7 +64,7 @@ The backend component uses nodeJS with Sequelize ORM for communicating with data
 
 ### C5. 
 
-If you want to test backend API endpoints, please use Postman.
+~~If you want to test backend API endpoints, please use Postman.~~ Please run the application code to see features.
 
 # Backend Component
 
