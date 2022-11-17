@@ -13,7 +13,6 @@ import {
   reset as notesReset,
 } from '../features/notes/noteSlice'
 import NoteItem from '../components/NoteItem'
-// import openSocket from 'socket.io-client';
 
 
 Modal.setAppElement('#root')
@@ -39,19 +38,6 @@ function Ticket() {
   //var oldDescription = ticket.description.toString()
   const [newDescription, setNewDescription] = useState()
 
-//   useEffect(() => {
-//     const newSocket = openSocket('/');
-//     const handler = data => {
-//       if (data.action === 'add-note' 
-//         && (ticketId === data.data.ticket.toString()) 
-//         && ( data.data.user._id.toString() !== user._id.toString() ) ) {
-//         dispatch(updateNotes( data.data ))
-//       } 
-//     };
-//     newSocket.on( 'posts', handler )
-//     return () => newSocket.off( 'posts', handler )
-//   }, []);
-
   useEffect(() => {
     if (isError) {
       toast.error(message)
@@ -61,10 +47,10 @@ function Ticket() {
     // eslint-disable-next-line
   }, [isError, message, ticketId])
 
-  if ( Object.keys(ticket).length === 0 ){
-    dispatch(getTicket(ticketId))
-    dispatch(getNotes(ticketId))
-  }
+  // if ( Object.keys(ticket).length === 0 ){
+  //   dispatch(getTicket(ticketId))
+  //   dispatch(getNotes(ticketId))
+  // }
 
   const onTicketClose = () => {
     dispatch(closeTicket(ticketId))
@@ -83,10 +69,6 @@ function Ticket() {
     e.preventDefault()
     dispatch(updateTicket({ description: newDescription, status: ticket.status, id: ticketId} ))
     closeTicketModel()
-    if ( Object.keys(ticket).length === 0 ){
-      dispatch(getTicket(ticketId))
-      dispatch(getNotes(ticketId))
-    }
   }
 
   // Open/close modal
@@ -97,7 +79,7 @@ function Ticket() {
   const closeTicketModel = () => setUpdateTicketModal(false)
 
   
-  if (isLoading) {
+  if ( isLoading || Object.keys(ticket).length === 0 ) {
     return <Spinner />
   }
   if (isError) {
@@ -125,12 +107,12 @@ function Ticket() {
           <h3>Description of Issue</h3>
           <p>{ticket.description}</p>
         </div>
-        <h2>Notes</h2>
+        <h2>Messages</h2>
       </header>
 
       {ticket.status !== 'closed' && (
         <button onClick={openModal} className='btn'>
-          <FaPlus /> Add Note
+          <FaPlus /> Leave messages
         </button>
       )}
 

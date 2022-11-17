@@ -26,7 +26,6 @@ const NewTicket: FC<any> = () => {
         if (isError) {
             toast.error(message)
         }
-        console.log("is success", isSuccess)
         if (isSuccess) {
             dispatch(reset())
             navigate('/tickets')
