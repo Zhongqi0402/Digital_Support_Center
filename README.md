@@ -16,6 +16,8 @@ We have set up the MySQL database on the local machine and are able to interact 
 2. Check if a user exists in the database
 3. Update a ticket into the database
 4. Delete a ticket from the database
+5. Join ticket with user and product table to find all tickets for a user
+6. Fetch all notes associate with a ticket order by creation time ascendingly
 
 ### C1. Production dataset Generation
 
@@ -23,6 +25,9 @@ We used a python script to generate the production dataset. We connect to our GC
 
 The `product` table is the only table that is based on fixed data. We only support creating tickets on three manufacturers - "Apple", "Samsung" and "Huawei". The types for the products are laptops, phone and tablet, and the colours are silver, black golden and other. Therefore, we create all different combinations of manufacturer, type, and colour based on these categories.
 
+The `ticket`, `note` and `user` tables are generated based on randomization. We used `essential_generators.DocumentGenerator` to randomly generate sentences and we used `name` package to randomly generate fields in these tables. For `user` table, we use their randomly generated name concatenated with "@gmail.com" for their email. 
+
+As a production dataset, we have about 20,000 users, 36 product records, 10,000 tickets and 1000 notes.
 
 
 ### C2. SQL for Creating Tables and inserting sample data
