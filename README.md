@@ -21,22 +21,22 @@ For running frontend component, navigate to the frontend folder first. Run `npm 
 ### C1. Features it currently supports
 1. Register a user to the database 
     * frontend code path: `/frontend/src/pages/register.tsx`
-    * backend code path: 
+    * backend code path: `/backend/routes/userRoute/userController.ts`
 2. Check if a user exists in the database
     * frontend code path: `/frontend/src/pages/login.tsx`
-    * backend code path: 
+    * backend code path: `/backend/routes/userRoute/userController.ts`
 3. Update a ticket into the database
     * frontend code path: `/frontend/src/pages/Ticket.tsx`
-    * backend code path: 
+    * backend code path: `/backend/routes/ticketRoute/ticketController.ts`
 4. Delete a ticket from the database
     * frontend code path: `/frontend/src/pages/Ticket.tsx`
-    * backend code path: 
+    * backend code path: `/backend/routes/ticketRoute/ticketController.ts`
 5. Join ticket with user and product table to find all tickets for a user
     * frontend code path: `/frontend/src/pages/Tickets.tsx`
-    * backend code path: 
+    * backend code path: `/backend/routes/ticketRoute/ticketController.ts`
 6. Fetch all notes associate with a ticket order by creation time ascendingly
     * frontend code path: `/frontend/src/pages/Ticket.tsx`
-    * backend code path: 
+    * backend code path: `/backend/routes/noteRoute/noteController.ts`
 
 ### C1. Production dataset Generation
 
@@ -49,13 +49,13 @@ The `ticket`, `note` and `user` tables are generated based on randomization. We 
 As a production dataset, we have about 20,000 users, 36 product records, 10,000 tickets and 1000 notes.
 
 
-### C2. SQL for Creating Tables and inserting sample data
+### C2. SQL for Creating Tables for both Production Database and Sample Database and inserting sample data
 
-Typescript code for reading csv and insert sample data to database be found in `backend/server.ts` and the SQL can be found in `backend/createDB/create.sql` file. Table definitions has a name of Model.ts and they can be found in `backend/routes` under different routes. There are functions in `server.ts` file for checking if tables in local database are empty or not. If the user table is empty locally, then it will populate data from csv files into the database.
+Typescript code for reading csv and insert sample data to database be found in `backend/server.ts` and the SQL can be found in `backend/createDB/createSample.sql` and `backend/createDB/createProduction.sql`. Table definitions has a name of Model.ts and they can be found in `backend/routes` under different routes. There are functions in `server.ts` file for checking if tables in local database are empty or not. If the user table is empty locally, then it will populate data from csv files into the database.
 
 ### C3. SQL Code
 
-The backend component uses nodeJS with Sequelize ORM for communicating with dataabse. 
+The backend component uses nodeJS with Sequelize ORM for communicating with database. 
 - Direct SQL queries for basic features sample database can be found under `backend/sqlQueries`. 6b.sql, 7b.sql, 8b.sql, 9b.sql, 10b.sql, 11b.sql are ordered by Feature number R6, R7, R8, R9, R10, R11 respectively.
 - Direct SQL queries for basic features production database can be found under `backend/sqlQueries`. 6c.sql, 7c.sql, 8c.sql, 9c.sql, 10c.sql, 11c.sql are ordered by Feature number R6, R7, R8, R9, R10, R11 respectively.
 - Output Of each corresponding sql queries are saved as `feature number[b|c].out.csv`.
