@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import { Link } from 'react-router-dom'
 import { AiOutlineSend } from "react-icons/ai";
 import { useState, useEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { login, reset } from '../features/auth/authSlice'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import Spinner from '../components/Spinner'
 
 const Login: FC<any> = () => {
     const [formData, setFormData] = useState({
@@ -39,6 +39,8 @@ const Login: FC<any> = () => {
         (state: any) => state.auth
     )
 
+    
+    
     useEffect(() => {
         if (isError) {
           toast.error("Invalid Username and password pair!")
@@ -55,7 +57,9 @@ const Login: FC<any> = () => {
     
         dispatch(reset())
     }, [isError, isSuccess, user, message, navigate, dispatch])
-
+    if (isLoading) {
+        return <Spinner />
+    }
     return (
         <>
         <section className='heading'>

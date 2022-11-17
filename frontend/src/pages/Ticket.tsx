@@ -11,7 +11,6 @@ import {
   getNotes,
   createNote,
   reset as notesReset,
-  updateNotes
 } from '../features/notes/noteSlice'
 import NoteItem from '../components/NoteItem'
 // import openSocket from 'socket.io-client';
@@ -22,6 +21,7 @@ Modal.setAppElement('#root')
 function Ticket() {
   // states
   const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [updateTicketModalOpen, setUpdateTicketModal] = useState(false)
   const [noteText, setNoteText] = useState('')
 
   const { ticket, isLoading, isSuccess, isError, message } = useSelector(
@@ -82,7 +82,7 @@ function Ticket() {
   const onTicketUpdate = (e: any) => {
     e.preventDefault()
     dispatch(updateTicket({ description: newDescription, status: ticket.status, id: ticketId} ))
-    closeModal()
+    closeTicketModel()
     if ( Object.keys(ticket).length === 0 ){
       dispatch(getTicket(ticketId))
       dispatch(getNotes(ticketId))
@@ -92,7 +92,9 @@ function Ticket() {
   // Open/close modal
   const openModal = () => setModalIsOpen(true)
   const closeModal = () => setModalIsOpen(false)
-  console.log(ticket)
+
+  const openTicketModel = () => setUpdateTicketModal(true)
+  const closeTicketModel = () => setUpdateTicketModal(false)
 
   
   if (isLoading) {
@@ -158,7 +160,6 @@ function Ticket() {
               id='noteText'
               className='form-control'
               placeholder='Note text'
-              value={noteText}
               onChange={(e) => setNoteText(e.target.value)}
             ></textarea>
           </div>
@@ -174,15 +175,20 @@ function Ticket() {
         <NoteItem key={note.id} note={note} />
       ))}
 
+
+
+
+
+
       {ticket.status !== 'closed' && (
-        <button onClick={openModal} className='btn btn-block'>
+        <button onClick={openTicketModel} className='btn btn-block'>
           Update Ticket
       </button>
       )}
 
       <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
+        isOpen={updateTicketModalOpen}
+        onRequestClose={closeTicketModel}
         style={{content: {
             width: '600px',
             top: '50%',
@@ -193,17 +199,17 @@ function Ticket() {
             transform: 'translate(-50%, -50%)',
             position: 'relative',
           },}}
-        contentLabel='Add Note'
+        contentLabel='update ticket'
       >
         <h2>Update ticket</h2>
-        <button className='btn-close' onClick={closeModal}>
+        <button className='btn-close' onClick={closeTicketModel}>
           X
         </button>
         <form onSubmit={onTicketUpdate}>
           <div className='form-group'>
             <textarea
-              name='noteText'
-              id='noteText'
+              name='updateTicket'
+              id='updateTicket'
               className='form-control'
               placeholder= 'new description'
               value={newDescription}
