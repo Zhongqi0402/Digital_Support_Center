@@ -1,12 +1,11 @@
-import React, { FC } from 'react';
-import { Link } from 'react-router-dom'
-import { AiOutlineTeam } from "react-icons/ai";
+import { FC } from 'react';
 import { SlUserFollowing } from "react-icons/sl";
 import { useState, useEffect } from 'react'
 import { register, reset} from '../features/auth/authSlice'
 import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import Spinner from '../components/Spinner'
 
 function Register() {
 
@@ -69,7 +68,9 @@ function Register() {
 
     dispatch(reset())
   }, [isError, isSuccess, user, message, navigate, dispatch])
-
+  if (isLoading) {
+    return <Spinner />
+  }
   return (
     <>
             <section className='heading'>

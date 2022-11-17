@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { AiOutlineTeam } from "react-icons/ai";
 import { BiUserCheck } from "react-icons/bi";
 import { useSelector, useDispatch } from 'react-redux'

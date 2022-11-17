@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getTickets, getAllTickets, reset } from '../features/tickets/ticketSlice'
 import BackButton from '../components/GoBackButton'
 import TicketItem from '../components/TicketItem'
+import Spinner from '../components/Spinner'
 
 function Tickets() {
     const { tickets, isLoading, isSuccess } = useSelector(
@@ -34,7 +35,9 @@ function Tickets() {
     }, [dispatch, user])
 
 
-    
+    if (isLoading) {
+      return <Spinner />
+    }
     return (
       <>
         

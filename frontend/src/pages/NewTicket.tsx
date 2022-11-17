@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useState, useEffect} from 'react'
 import { createTicket, reset } from '../features/tickets/ticketSlice'
 import { toast } from 'react-toastify'
-
+import Spinner from '../components/Spinner'
 
 const NewTicket: FC<any> = () => {
     const { user } = useSelector((state: any) => state.auth)
@@ -26,7 +26,6 @@ const NewTicket: FC<any> = () => {
         if (isError) {
             toast.error(message)
         }
-        console.log("is success", isSuccess)
         if (isSuccess) {
             dispatch(reset())
             navigate('/tickets')
@@ -39,10 +38,11 @@ const NewTicket: FC<any> = () => {
         e.preventDefault()
         const product = {manufacturer, 
             type: type.toLowerCase(), colour:colour.toLowerCase()}
-        // console.log("submit")
-        // const postData = { product, description }
-        // console.log( postData )
         dispatch(createTicket({ product, description }))
+    }
+
+    if (isLoading) {
+        return <Spinner />
     }
 
     return (

@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import { Link } from 'react-router-dom'
 import { AiOutlineSend } from "react-icons/ai";
 import { useState, useEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { login, reset } from '../features/auth/authSlice'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import Spinner from '../components/Spinner'
 
 const Login: FC<any> = () => {
     const [formData, setFormData] = useState({
@@ -39,10 +39,11 @@ const Login: FC<any> = () => {
         (state: any) => state.auth
     )
 
+    
+    
     useEffect(() => {
-        console.log("here", isError)
         if (isError) {
-          toast.error(message)
+          toast.error("Invalid Username and password pair!")
         }
     
         // Redirect when logged in
@@ -56,7 +57,9 @@ const Login: FC<any> = () => {
     
         dispatch(reset())
     }, [isError, isSuccess, user, message, navigate, dispatch])
-
+    if (isLoading) {
+        return <Spinner />
+    }
     return (
         <>
         <section className='heading'>
@@ -93,7 +96,7 @@ const Login: FC<any> = () => {
                     />
                 </div>
                 <div className='form-group'>
-                    <button className='btn btn-block'>Submit</button>
+                    <button className='btn btn-block'>Let Me In!!</button>
                 </div>
             </form>
         </section>

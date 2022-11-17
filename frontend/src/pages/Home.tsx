@@ -7,12 +7,13 @@ import { useSelector } from 'react-redux'
 
 const Home: FC<any> = () => {
   const { user } = useSelector( ( state: any ) => state.auth )
-
-  let message = user && user.isAdmin ? "View All Tickets" : 'View My Tickets'
   
   return (
     <>
-      {!user || !user.isAdmin ? <section className='heading'>
+
+
+      {!user || !user.isAdmin ? 
+      <section className='heading'>
         <h1>What do you need help with?</h1>
         <p>Please choose from an option below</p>
       </section> :
@@ -20,17 +21,21 @@ const Home: FC<any> = () => {
 
       {( user && !user.isAdmin ) && <Link to='/new-ticket' className='btn btn-reverse btn-block'>
         <VscThreeBars /> Create New Ticket
-      </Link>}
+      </Link>
+      
+      }
 
-      {<Link to={!user ? '/login' : '/tickets'} className='btn btn-block'>
-        <VscWand /> { message }
+      {( !user || !user.isAdmin ) && <Link to='/tickets' className='btn btn-block'>
+        <VscWand /> View My Tickets
       </Link>}
 
       
-
-      {<Link to={user && user.isAdmin ? '/admin/tickets' : '/tickets'} className='btn btn-block'>
-        <FiUserCheck /> Admin User Click here
-      </Link>}
+      {
+        (user && user.isAdmin) &&
+        <Link to='/admin/tickets' className='btn btn-block'>
+          <FiUserCheck /> Admin User Click here
+        </Link>
+      }
     
     </>
   );

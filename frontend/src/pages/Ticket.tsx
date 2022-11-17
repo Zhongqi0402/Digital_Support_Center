@@ -11,10 +11,8 @@ import {
   getNotes,
   createNote,
   reset as notesReset,
-  updateNotes
 } from '../features/notes/noteSlice'
 import NoteItem from '../components/NoteItem'
-// import openSocket from 'socket.io-client';
 
 
 Modal.setAppElement('#root')
@@ -22,6 +20,7 @@ Modal.setAppElement('#root')
 function Ticket() {
   // states
   const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [updateTicketModalOpen, setUpdateTicketModal] = useState(false)
   const [noteText, setNoteText] = useState('')
 
   const { ticket, isLoading, isSuccess, isError, message } = useSelector(
@@ -39,19 +38,6 @@ function Ticket() {
   //var oldDescription = ticket.description.toString()
   const [newDescription, setNewDescription] = useState()
 
-//   useEffect(() => {
-//     const newSocket = openSocket('/');
-//     const handler = data => {
-//       if (data.action === 'add-note' 
-//         && (ticketId === data.data.ticket.toString()) 
-//         && ( data.data.user._id.toString() !== user._id.toString() ) ) {
-//         dispatch(updateNotes( data.data ))
-//       } 
-//     };
-//     newSocket.on( 'posts', handler )
-//     return () => newSocket.off( 'posts', handler )
-//   }, []);
-
   useEffect(() => {
     if (isError) {
       toast.error(message)
@@ -61,10 +47,10 @@ function Ticket() {
     // eslint-disable-next-line
   }, [isError, message, ticketId])
 
-  if ( Object.keys(ticket).length === 0 ){
-    dispatch(getTicket(ticketId))
-    dispatch(getNotes(ticketId))
-  }
+  // if ( Object.keys(ticket).length === 0 ){
+  //   dispatch(getTicket(ticketId))
+  //   dispatch(getNotes(ticketId))
+  // }
 
   const onTicketClose = () => {
     dispatch(closeTicket(ticketId))
@@ -82,20 +68,18 @@ function Ticket() {
   const onTicketUpdate = (e: any) => {
     e.preventDefault()
     dispatch(updateTicket({ description: newDescription, status: ticket.status, id: ticketId} ))
-    closeModal()
-    if ( Object.keys(ticket).length === 0 ){
-      dispatch(getTicket(ticketId))
-      dispatch(getNotes(ticketId))
-    }
+    closeTicketModel()
   }
 
   // Open/close modal
   const openModal = () => setModalIsOpen(true)
   const closeModal = () => setModalIsOpen(false)
-  console.log(ticket)
+
+  const openTicketModel = () => setUpdateTicketModal(true)
+  const closeTicketModel = () => setUpdateTicketModal(false)
 
   
-  if (isLoading) {
+  if ( isLoading || Object.keys(ticket).length === 0 ) {
     return <Spinner />
   }
   if (isError) {
@@ -123,12 +107,12 @@ function Ticket() {
           <h3>Description of Issue</h3>
           <p>{ticket.description}</p>
         </div>
-        <h2>Notes</h2>
+        <h2>Messages</h2>
       </header>
 
       {ticket.status !== 'closed' && (
         <button onClick={openModal} className='btn'>
-          <FaPlus /> Add Note
+          <FaPlus /> Leave messages
         </button>
       )}
 
@@ -158,7 +142,6 @@ function Ticket() {
               id='noteText'
               className='form-control'
               placeholder='Note text'
-              value={noteText}
               onChange={(e) => setNoteText(e.target.value)}
             ></textarea>
           </div>
@@ -174,15 +157,20 @@ function Ticket() {
         <NoteItem key={note.id} note={note} />
       ))}
 
+
+
+
+
+
       {ticket.status !== 'closed' && (
-        <button onClick={openModal} className='btn btn-block'>
+        <button onClick={openTicketModel} className='btn btn-block'>
           Update Ticket
       </button>
       )}
 
       <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
+        isOpen={updateTicketModalOpen}
+        onRequestClose={closeTicketModel}
         style={{content: {
             width: '600px',
             top: '50%',
@@ -193,17 +181,17 @@ function Ticket() {
             transform: 'translate(-50%, -50%)',
             position: 'relative',
           },}}
-        contentLabel='Add Note'
+        contentLabel='update ticket'
       >
         <h2>Update ticket</h2>
-        <button className='btn-close' onClick={closeModal}>
+        <button className='btn-close' onClick={closeTicketModel}>
           X
         </button>
         <form onSubmit={onTicketUpdate}>
           <div className='form-group'>
             <textarea
-              name='noteText'
-              id='noteText'
+              name='updateTicket'
+              id='updateTicket'
               className='form-control'
               placeholder= 'new description'
               value={newDescription}
