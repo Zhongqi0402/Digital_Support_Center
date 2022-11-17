@@ -19,12 +19,24 @@ For running frontend component, navigate to the frontend folder first. Run `npm 
 
 
 ### C1. Features it currently supports
-1. Register a user to the database
+1. Register a user to the database 
+    * frontend code path: `/frontend/src/pages/register.tsx`
+    * backend code path: 
 2. Check if a user exists in the database
+    * frontend code path: `/frontend/src/pages/login.tsx`
+    * backend code path: 
 3. Update a ticket into the database
+    * frontend code path: `/frontend/src/pages/Ticket.tsx`
+    * backend code path: 
 4. Delete a ticket from the database
+    * frontend code path: `/frontend/src/pages/Ticket.tsx`
+    * backend code path: 
 5. Join ticket with user and product table to find all tickets for a user
+    * frontend code path: `/frontend/src/pages/Tickets.tsx`
+    * backend code path: 
 6. Fetch all notes associate with a ticket order by creation time ascendingly
+    * frontend code path: `/frontend/src/pages/Ticket.tsx`
+    * backend code path: 
 
 ### C1. Production dataset Generation
 
