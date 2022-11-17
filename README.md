@@ -17,6 +17,13 @@ We have set up the MySQL database on the local machine and are able to interact 
 3. Update a ticket into the database
 4. Delete a ticket from the database
 
+### C1. Production dataset Generation
+
+We used a python script to generate the production dataset. We connect to our GCP MySQL through a python package `mysql.connector` and then insert our generated data. The code can be found in `\backend\productionDataGenerator.py`.
+
+The `product` table is the only table that is based on fixed data. We only support creating tickets on three manufacturers - "Apple", "Samsung" and "Huawei". The types for the products are laptops, phone and tablet, and the colours are silver, black golden and other. Therefore, we create all different combinations of manufacturer, type, and colour based on these categories.
+
+
 
 ### C2. SQL for Creating Tables and inserting sample data
 
