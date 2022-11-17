@@ -37,8 +37,9 @@ Typescript code for reading csv and insert sample data to database be found in `
 ### C3. SQL Code
 
 The backend component uses nodeJS with Sequelize ORM for communicating with dataabse. 
-- Direct SQL queries for basic features can be found under `backend/sqlQueries`. 6.sql, 7.sql, 8.sql, 9.sql are ordered by Feature number R6, R7, R8, R9 respectively.
-- Output Of each corresponding sql queries are saved as `feature number.out.csv`.
+- Direct SQL queries for basic features sample database can be found under `backend/sqlQueries`. 6b.sql, 7b.sql, 8b.sql, 9b.sql, 10b.sql, 11b.sql are ordered by Feature number R6, R7, R8, R9, R10, R11 respectively.
+- Direct SQL queries for basic features production database can be found under `backend/sqlQueries`. 6c.sql, 7c.sql, 8c.sql, 9c.sql, 10c.sql, 11c.sql are ordered by Feature number R6, R7, R8, R9, R10, R11 respectively.
+- Output Of each corresponding sql queries are saved as `feature number[b|c].out.csv`.
 - Typescript with Sequelize to create tables from sample data can be found in `backend/server.ts`
 - Other functional ORM code can be found in `Controller` file under `backend/routes` with different routes. 
 
