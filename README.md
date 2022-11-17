@@ -11,6 +11,13 @@ We have set up the MySQL database on the local machine and are able to interact 
 5. In a terminal with the project folder, do `cd backend`
 6. run `npm run dev` and npm will take care of creating the table by running codes in `/backend/server.ts`
 
+### C1. Running Application Code
+
+For running the application you need to run the backend component first, then run the frontend component.
+For running backend component, make sure you have docker installed in you laptop and run either `./backend/runProductionImage.sh` or `./backend/runSampleImage.sh` to run docker image which connects to either sample database or production database. It will start a port at `localhost:50000`, make sure this address is not taken before running the bash code.
+For running frontend component, navigate to the frontend folder first. Run `npm install` to install all dependencies and then run `npm start` to start the application code. It will automatically start a port at `localhost:3000`.
+
+
 ### C1. Features it currently supports
 1. Register a user to the database
 2. Check if a user exists in the database
