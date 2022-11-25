@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 
 function NoteItem({ note }: any) {
   const { user } = useSelector( ( state : any ) => state.auth )
-
   return (
     <div
       className='note'
@@ -13,7 +12,7 @@ function NoteItem({ note }: any) {
       }}
     >
       <h4>
-        Message from {note.isStaff ? <span>Staff</span> : <span>{user.name}</span>}
+        Message from {note.isStaff ? <span>Staff</span> : <span>{note.user.name}</span>}
       </h4>
       <p>{note.text}</p>
       <div className='note-date'>

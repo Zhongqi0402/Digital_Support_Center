@@ -38,7 +38,7 @@ exports.getAllTickets = (0, express_async_handler_1.default)((req, res) => __awa
                 status: 'open',
             },
             include: [UserModel_1.default, ProductModel_1.default],
-            attributes: ['id', 'createdAt', 'product.type', 'status', 'user.name'],
+            // attributes: ['id', 'createdAt', 'product.type', 'status', 'user.name'],
             order: [['createdAt', 'DESC']],
         });
         res.status(200).json(tickets);
@@ -65,14 +65,14 @@ exports.getTicket = (0, express_async_handler_1.default)((req, res) => __awaiter
     try {
         const ticket = yield TicketModel_1.default.findByPk(req.params.id, {
             include: [UserModel_1.default, ProductModel_1.default],
-            attributes: [
-                'id',
-                'createdAt',
-                'user.name',
-                'status',
-                'product.type',
-                'description',
-            ],
+            // attributes: [
+            //   'id',
+            //   'createdAt',
+            //   'user.name',
+            //   'status',
+            //   'product.type',
+            //   'description',
+            // ],
         });
         if (!ticket) {
             res.status(404);

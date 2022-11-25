@@ -27,7 +27,7 @@ function Tickets() {
       if (user) {
         if ( user.isAdmin ) {
           setTicket_heading('staff-ticket-headings')
-          //dispatch(getAllTickets())
+          dispatch(getAllTickets())
         } else {
           dispatch(getTickets())
         }
@@ -35,7 +35,7 @@ function Tickets() {
     }, [dispatch, user])
 
 
-    if (isLoading) {
+    if (isLoading || Object.keys(tickets).length === 0 ) {
       return <Spinner />
     }
     return (

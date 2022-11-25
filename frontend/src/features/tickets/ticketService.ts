@@ -82,15 +82,15 @@ const getAllTickets = async (token: any) => {
   return response.data
 }
 
-// const adminGetTicket = async (ticketId: any, token: any) => {
-//   const config = {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   }
-//   const response = await axios.get( '/api/admin/ticket/' + ticketId, config )
-//   return response.data
-// }
+const adminGetTicket = async (ticketId: any, token: any) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+  const response = await axios.get( '/api/admin/ticket/' + ticketId, config )
+  return response.data
+}
 
 const ticketService = {
     createTicket,
@@ -98,8 +98,8 @@ const ticketService = {
     getTicket,
     closeTicket,
     getAllTickets,
-    updateTicket
-    // adminGetTicket
+    updateTicket,
+    adminGetTicket
 }
 
 export default ticketService

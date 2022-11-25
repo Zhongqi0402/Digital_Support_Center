@@ -131,6 +131,26 @@ export const getAllTickets = createAsyncThunk(
 )
 
 
+export const adminGetTicket = createAsyncThunk(
+  'admin/tickets/get',
+  async (ticketId: any, thunkAPI: any) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token
+      return await ticketService.adminGetTicket(ticketId, token)
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
+
 export const ticketSlice = createSlice({
   name: 'ticket',
   initialState,
@@ -199,6 +219,32 @@ export const ticketSlice = createSlice({
             ? (ticket.status = 'closed')
             : ticket
         )
+      })
+      .addCase(getAllTickets.pending, (state : any) => {
+        state.isLoading = true
+      })
+      .addCase(getAllTickets.fulfilled, (state : any, action : any) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.tickets = action.payload
+      })
+      .addCase(getAllTickets.rejected, (state : any, action : any) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(adminGetTicket.pending, (state : any) => {
+        state.isLoading = true
+      })
+      .addCase(adminGetTicket.fulfilled, (state : any, action : any) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.ticket = action.payload
+      })
+      .addCase(adminGetTicket.rejected, (state : any, action : any) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
       })
   },
 })

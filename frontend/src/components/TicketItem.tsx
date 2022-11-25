@@ -12,7 +12,7 @@ function TicketItem({ ticket } : any) {
     }
   }, [ user ])
   
-
+  // console.log( "ticketItem: ", ticket )
   return (
     <div className={ticketClass}>
       <div>{new Date(ticket.createdAt).toLocaleString('en-US')}</div>
