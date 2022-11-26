@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  backend:
+    image: 'xianchengz/348-backend'
+    ports:
+      - '50000:50000'
+    networks:
+      - app-network
+    environment:
+      - DB_NAME=348-project-production
+  frontend:
+    image: 'xianchengz/348-frontend'
+    ports:
+      - '3000:3000'
+    networks:
+      - app-network
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+
+networks:
+  app-network:

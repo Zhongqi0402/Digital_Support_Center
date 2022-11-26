@@ -1,0 +1,1 @@
+docker build -t xianchengz/348-frontend .

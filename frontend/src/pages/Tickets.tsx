@@ -35,7 +35,7 @@ function Tickets() {
     }, [dispatch, user])
 
 
-    if (isLoading || Object.keys(tickets).length === 0 ) {
+    if (isLoading ) {
       return <Spinner />
     }
     return (
