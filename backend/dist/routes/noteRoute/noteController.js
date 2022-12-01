@@ -41,7 +41,23 @@ exports.getNotes = (0, express_async_handler_1.default)((req, res) => __awaiter(
             },
             order: [['createdAt', 'ASC']],
         });
-        res.status(200).json(notes);
+        const user = yield UserModel_1.default.findOne({
+            where: {
+                id: ticket === null || ticket === void 0 ? void 0 : ticket.getDataValue("userID")
+            }
+        });
+        let returnObj = notes.map((note) => {
+            return {
+                id: note.getDataValue("id"),
+                isStaff: note.getDataValue("isStaff"),
+                text: note.getDataValue("text"),
+                createdAt: note.getDataValue("createdAt"),
+                user: {
+                    name: user === null || user === void 0 ? void 0 : user.getDataValue("name")
+                }
+            };
+        });
+        res.status(200).json(returnObj);
     }
     else {
         res.status(401);
@@ -73,9 +89,11 @@ exports.addNote = (0, express_async_handler_1.default)((req, res) => __awaiter(v
         ticketID: req.params.ticketId,
     });
     const newNote = {
+        id: note.getDataValue("id"),
         text: note.getDataValue('text'),
         isStaff: note.getDataValue('isStaff'),
         ticketID: note.getDataValue('ticketID'),
+        createdAt: note.getDataValue('createdAt'),
         user: {
             id: user.getDataValue('id'),
             name: user.getDataValue('name'),
@@ -84,7 +102,7 @@ exports.addNote = (0, express_async_handler_1.default)((req, res) => __awaiter(v
         },
     };
     io.getIO().emit('posts', { action: 'add-note', data: newNote });
-    res.status(200).json(note);
+    res.status(200).json(newNote);
 }));
 module.exports = {
     getNotes: exports.getNotes,

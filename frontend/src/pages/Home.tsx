@@ -17,7 +17,7 @@ const Home: FC<any> = () => {
         <h1>What do you need help with?</h1>
         <p>Please choose from an option below</p>
       </section> :
-      <h1>Move your ass and help your customers</h1>}
+      <h1>Please click button below and help your customers</h1>}
 
       {( user && !user.isAdmin ) && <Link to='/new-ticket' className='btn btn-reverse btn-block'>
         <VscThreeBars /> Create New Ticket

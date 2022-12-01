@@ -43,7 +43,7 @@ export const getAllTickets = asyncHandler(
           status: 'open',
         },
         include: [User, Product],
-        attributes: ['id', 'createdAt', 'product.type', 'status', 'user.name'],
+        // attributes: ['id', 'createdAt', 'product.type', 'status', 'user.name'],
         order: [['createdAt', 'DESC']],
       })
       res.status(200).json(tickets)
@@ -73,14 +73,14 @@ export const getTicket = asyncHandler(
     try {
       const ticket = await Ticket.findByPk(req.params.id, {
         include: [User, Product],
-        attributes: [
-          'id',
-          'createdAt',
-          'user.name',
-          'status',
-          'product.type',
-          'description',
-        ],
+        // attributes: [
+        //   'id',
+        //   'createdAt',
+        //   'user.name',
+        //   'status',
+        //   'product.type',
+        //   'description',
+        // ],
       })
 
       if (!ticket) {

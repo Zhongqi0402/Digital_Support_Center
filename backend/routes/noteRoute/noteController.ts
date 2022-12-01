@@ -49,7 +49,23 @@ export const getNotes = asyncHandler(
         },
         order: [['createdAt', 'ASC']],
       })
-      res.status(200).json(notes)
+      const user = await User.findOne({
+        where: {
+          id: ticket?.getDataValue("userID")
+        }
+      })
+      let returnObj = notes.map(( note: any) => {
+        return {
+          id: note.getDataValue( "id" ),
+          isStaff: note.getDataValue("isStaff"),
+          text: note.getDataValue("text"),
+          createdAt: note.getDataValue("createdAt"),
+          user: {
+            name: user?.getDataValue("name")
+          }
+        }
+      })
+      res.status(200).json(returnObj)
     } else {
       res.status(401)
       throw new Error('User not authorized')
@@ -88,9 +104,11 @@ export const addNote = asyncHandler(
       ticketID: req.params.ticketId,
     })
     const newNote = {
+      id: note.getDataValue( "id" ),
       text: note.getDataValue('text'),
       isStaff: note.getDataValue('isStaff'),
       ticketID: note.getDataValue('ticketID'),
+      createdAt: note.getDataValue( 'createdAt' ),
       user: {
         id: user.getDataValue('id'),
         name: user.getDataValue('name'),
@@ -99,7 +117,7 @@ export const addNote = asyncHandler(
       },
     }
     io.getIO().emit('posts', { action: 'add-note', data: newNote })
-    res.status(200).json(note)
+    res.status(200).json(newNote)
   }
 )
 

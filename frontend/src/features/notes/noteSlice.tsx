@@ -34,7 +34,7 @@ export const getNotes = createAsyncThunk(
 // Update ticket notes
 export const updateNotes = createAsyncThunk(
   'notes/update',
-  async (newNote, thunkAPI) => {
+  async (newNote: any, thunkAPI: any) => {
     try {
       return noteService.updateNotes( newNote )
     } catch (error: any) {

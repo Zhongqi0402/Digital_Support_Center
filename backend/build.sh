@@ -1,1 +1,1 @@
-docker build -t 348-backend .
+docker build -t xianchengz/348-backend .
