@@ -1,4 +1,4 @@
-# cs348_project
+# Digital Support Center
 
 We have set up the MySQL database on the local machine and are able to interact with it using either MySql workbench or command line. The backend Component uses MVC (Model-View-Controller) model, where the MVC of each route can be found under `backend/routes`
 
