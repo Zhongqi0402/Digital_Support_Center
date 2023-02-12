@@ -70,15 +70,6 @@ The backend component uses nodeJS with Sequelize ORM for communicating with data
 
 # Backend Component
 
-### External Framework
-
-- express
-- express-async-handler
-- dotenv
-- jsonwebtoken
-- sequelize
-- socket.io
-
 ### Comiple and Start
 
 run `npm build` first, and then `npm run dev`. Note that by default, the backend would start in `localhost:50000`. The compiled javascript code (from typescript) would be saved to `/backend/dist` folder.
